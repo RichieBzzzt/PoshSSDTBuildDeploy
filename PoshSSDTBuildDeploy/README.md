@@ -12,7 +12,7 @@ Initial uplaod of build and deploy using PowerShell and Microsoft.FData.Tools.MS
 
 
 ## How To 
-Consult the [Test Script] (https://github.com/RichieBzzzt/PoshSSDTBuildDeploy/blob/master/PoshSSDTBuildDeploy/test/run_test.ps1) in the repo for a sample of how to use this module to build and deploy.
+Consult the [https://github.com/RichieBzzzt/PoshSSDTBuildDeploy/blob/master/PoshSSDTBuildDeploy/test/run_test.ps1] (Test Script) in the repo for a sample of how to use this module to build and deploy.
 
 Each Function should have it's own helping headers... eventually.
 
@@ -24,4 +24,5 @@ The basic process is
 * Build sqlproj file
 * Deploy DACPAC
 
-This teest script includes a step to create a localdb instance to deploy to.
+This teest script includes a step to create a localdb instance to deploy to. Therefore this test script shouldrun without having to set up anything else.
+
