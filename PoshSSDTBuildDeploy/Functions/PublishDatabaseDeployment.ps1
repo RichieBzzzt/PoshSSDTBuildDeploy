@@ -43,10 +43,15 @@ Function Publish-DatabaseDeployment {
         Write-Host "Executing Deployment..." -ForegroundColor Yellow
         Register-ObjectEvent -InputObject $dacServices -EventName "Message" -Source "msg" -Action { Write-Host $EventArgs.Message.Message } | Out-Null       
         $dacServices.Deploy($dacPackage, $targetDatabaseName, $true, $dacProfile.DeployOptions, $null)
-        Unregister-Event -SourceIdentifier "msg"
         Write-Host "Deployment successful!" -ForegroundColor DarkGreen
     }  
     catch [Microsoft.SqlServer.Dac.DacServicesException] {
-        throw ('Deployment failed: ''{0}'' Reason: ''{1}''' -f $_.Exception.Message, $_.Exception.InnerException.Message)
+        $toThrow = ('Deployment failed: ''{0}'' Reason: ''{1}''' -f $_.Exception.Message, $_.Exception.InnerException.Message)
+    }
+    finally {
+        Unregister-Event -SourceIdentifier "msg"
+        if ($toThrow) {
+            Throw $toThrow
+        }
     }
 }
