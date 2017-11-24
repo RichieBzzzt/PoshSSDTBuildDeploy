@@ -1,5 +1,6 @@
 Clear-Host
-$installVs2017BuildTools = Start-Process -FilePath .\launch_localdb.bat -WorkingDirectory "C:\WINDOWS\System32" -Wait -PassThru  -NoNewWindow
+$lldb = Join-Path $PSScriptRoot "launch_localdb.bat"
+$installVs2017BuildTools = Start-Process -FilePath $lldb -WorkingDirectory "C:\WINDOWS\System32" -Wait -PassThru  -NoNewWindow
 Import-Module "..\PoshSSDTBuildDeploy" -Force
 $svrConnstring = "SERVER=(LocalDB)\TestDeploy;Integrated Security=True;Database=master"
 $WWI_NAME = "WideWorldImporters"
