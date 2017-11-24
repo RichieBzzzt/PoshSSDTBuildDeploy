@@ -6,3 +6,5 @@ PoshSSDTBuildDeploy/test/wwi-dw-ssdt/obj/
 tests/wwi-dw-ssdt/Microsoft\.Data\.Tools\.Msbuild/
 
 tests/wwi-dw-ssdt/bin/
+
+tests/wwi-dw-ssdt/obj/
