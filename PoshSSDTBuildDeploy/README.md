@@ -1,3 +1,6 @@
+# PoshSSDTBuildDeploy
+
+```powershell
 Import-Module "C:\Users\Richie\Source\Repos\PoshSSDTBuildDeploy\PoshSSDTBuildDeploy" -Force
     $svrConnstring = "SERVER=.\sixteen;Integrated Security=True;Database=master"
     $WWI_OLTP_NAME = "WideWorldImporters"
@@ -13,3 +16,4 @@ Clear-Host
     Install-MicrosoftDataToolsMSBuild -WorkingFolder $WWI_OLTP
     Invoke-MsBuildSSDT -DatabaseSolutionFilePath $WWI_OLTP_SLN -DataToolsFilePath $WWI_OLTP_DAC 
     Publish-DatabaseDeployment -dacfxPath $WWI_OLTP_DACFX -dacpac $WWI_OLTP_DACPAC -publishXml $WWI_OLTP_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_OLTP_NAME
+```powershell
