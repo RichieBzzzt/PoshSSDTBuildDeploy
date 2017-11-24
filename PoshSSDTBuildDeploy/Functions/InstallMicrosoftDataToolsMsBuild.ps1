@@ -2,8 +2,7 @@
 
 function Install-MicrosoftDataToolsMSBuild {
 
-    param ( [string] $WorkingFolder,
-        [String] $NugetPath
+    param ( [string] $WorkingFolder
         , [string] $DataToolsMsBuildPackageVersion
     )
 
@@ -14,22 +13,24 @@ function Install-MicrosoftDataToolsMSBuild {
 
     Write-Verbose "DataToolsVersion : $DataToolsMsBuildPackageVersion" -Verbose
     Write-Warning "If DataToolsVersion is blank latest will be used"
-    $NugetExe = "$NugetPath\nuget.exe"
+    $NugetExe = "$PsScriptRoot\nuget.exe"
     if (-not (Test-Path $NugetExe)) {
-        Write-Error "Cannot find nuget at path $NugetPath\nuget.exe"
-        exit 1
+        Write-Host "Cannot find nuget at path $NugetPath\nuget.exe"
+        Write-Host "Downloading Latest copy of NuGet!"
+        Invoke-WebRequest -Uri "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe" -OutFile $NugetExe
     }
-
-    write-warning "At least .NET Framework 4.6.1 needs to be installed on this machine to use Microsoft.Data.Tools.Msbuild." -verbose
-
+    $TestDotNetVersion = Test-NetInstalled -DotNetVersion "4.6.1"
+    Write-Host ".NET Version is $($TestDotNetVersion.DotNetVersion), DWORD Value is $($TestDotNetVersion.DWORD) and Required Version is $($TestDotNetVersion.RequiredVersion)" -ForegroundColor White -BackgroundColor DarkMagenta
+        if ($TestDotNetVersion.DWORD -le 394254)
+        {
+            Throw "Need to install .NET 4.6.1 at least!"
+        }
     $nugetInstallMsbuild = "&$NugetExe install Microsoft.Data.Tools.Msbuild -ExcludeVersion -OutputDirectory $WorkingFolder"
-
     if ($DataToolsMsBuildPackageVersion) {
         $nugetInstallMsbuild += "-version '$DataToolsMsBuildPackageVersion'"
     }
     Write-Host $nugetInstallMsbuild -BackgroundColor White -ForegroundColor DarkGreen
     Invoke-Expression $nugetInstallMsbuild
-
     $SSDTMSbuildFolder = "$WorkingFolder\Microsoft.Data.Tools.Msbuild\lib\net46"
     if (-not (Test-Path $SSDTMSbuildFolder)) {
         $SSDTMSbuildFolder = "$WorkingFolder\Microsoft.Data.Tools.Msbuild\lib\net40"

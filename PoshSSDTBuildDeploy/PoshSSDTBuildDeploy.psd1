@@ -62,8 +62,8 @@
     'Install-MicrosoftDataToolsMSBuild',
     'Invoke-MsBuildSSDT',
     'Publish-DatabaseDeployment',
-    'Test-Net461Installed'
-
+    'Test-NetInstalled',
+    'Install-VsBuildTools2017'
     )
     # Cmdlets to export from this module
     CmdletsToExport = '*'
