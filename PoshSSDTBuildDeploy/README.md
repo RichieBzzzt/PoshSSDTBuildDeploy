@@ -1,19 +1,7 @@
 # PoshSSDTBuildDeploy
 
-```powershell
-Import-Module "C:\Users\Richie\Source\Repos\PoshSSDTBuildDeploy\PoshSSDTBuildDeploy" -Force
-    $svrConnstring = "SERVER=.\sixteen;Integrated Security=True;Database=master"
-    $WWI_OLTP_NAME = "WideWorldImporters"
-    $WWI_OLTP = "C:\Users\Richie\Source\Repos\AssistDeploy_WWI_SSIS_Samples\WWI_SSDT\wwi-ssdt"
-    $WWI_OLTP_SLN = Join-Path $WWI_OLTP "\WideWorldImporters.sqlproj"
-    $WWI_OLTP_DAC = Join-Path $WWI_OLTP "\Microsoft.Data.Tools.Msbuild\lib\net46"
-    $WWI_OLTP_DACFX = Join-Path $WWI_OLTP_DAC "\Microsoft.SqlServer.Dac.dll"
-    $WWI_OLTP_DACPAC = Join-Path $WWI_OLTP "\bin\Debug\WideWorldImporters.dacpac"
-    $WWI_OLTP_PUB = Join-Path $WWI_OLTP "\bin\Debug\WideWorldImporters.publish.xml"
+Initial uplaod of build and deploy using PowerSHell and Microsoft.FData.Tools.MSBuild. See test folder for tests.
 
 
-Clear-Host
-    Install-MicrosoftDataToolsMSBuild -WorkingFolder $WWI_OLTP
-    Invoke-MsBuildSSDT -DatabaseSolutionFilePath $WWI_OLTP_SLN -DataToolsFilePath $WWI_OLTP_DAC 
-    Publish-DatabaseDeployment -dacfxPath $WWI_OLTP_DACFX -dacpac $WWI_OLTP_DACPAC -publishXml $WWI_OLTP_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_OLTP_NAME
-```powershell
+[<img src="https://bzzztio.visualstudio.com/_apis/public/build/definitions/e986a19c-74f7-4d1f-8316-7f478f3d6646/5/badge"/>]https://bzzztio.visualstudio.com/PoshSSDTBuildDeploy/_apps/hub/ms.vss-ciworkflow.build-ci-hub?_a=edit-build-definition&id=5)
+
