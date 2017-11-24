@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?> 
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 <metadata>
-<id>AssistDeploy</id>
+<id>PoshSSDTBuildDeploy</id>
 <version>1.0.0.0</version>
 <authors>Richie Lee</authors>
 <description>Use PowerShell and Microsoft.Data.Tools.MSBuild to build and deploy SSDT-based database projects.</description>
 </metadata>
 <files>
-<file src="AssistDeploy.psd1"/>
-<file src="AssistDeploy.psm1"/>
+<file src="PoshSSDTBuildDeploy.psd1"/>
+<file src="PoshSSDTBuildDeploy.psm1"/>
 <file src="readme.md"/>
 <file src="Functions\InstallMicrosoftDataToolsMsBuild.ps1" target="Functions"/>
 <file src="Functions\InstallVsBuildTools2017.ps1" target="Functions"/>
