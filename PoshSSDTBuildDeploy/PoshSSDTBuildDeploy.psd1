@@ -63,7 +63,9 @@
     'Invoke-MsBuildSSDT',
     'Publish-DatabaseDeployment',
     'Test-NetInstalled',
-    'Install-VsBuildTools2017'
+    'Install-VsBuildTools2017',
+    "Get-LocalDb2016",
+    "Install-LocalDb2016"
     )
     # Cmdlets to export from this module
     CmdletsToExport = '*'
