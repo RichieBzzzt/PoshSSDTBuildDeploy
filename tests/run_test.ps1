@@ -1,6 +1,6 @@
 Clear-Host
 $lldb = Join-Path $PSScriptRoot "launch_localdb.bat"
-$lcaunchLocalDb = Start-Process -FilePath $lldb -WorkingDirectory "C:\WINDOWS\System32" -Wait -PassThru  -NoNewWindow
+#$lcaunchLocalDb = Start-Process -FilePath $lldb -WorkingDirectory "C:\WINDOWS\System32" -Wait -PassThru  -NoNewWindow
 #Import-Module "C:\Users\Richie\Downloads\PoshSSDTBuildDeploy\PoshSSDTBuildDeploy" -Force
 #ipmo
 Import-Module (Join-Path $PSScriptRoot "..\PoshSSDTBuildDeploy") -Force
@@ -8,8 +8,12 @@ Import-Module (Join-Path $PSScriptRoot "..\PoshSSDTBuildDeploy") -Force
 #localdb
 $loc = $PSScriptRoot
 $tv = "13.1.4001.0"
+#either/or 
 $msi = Get-LocalDb2016 -WorkingFolder $loc -targetVersion $tv -Verbose
+$msi = Get-LocalDb2016NuGet -WorkingFolder $loc -targetVersion $tv -Verbose
+#then pass msi here
 Install-LocalDb2016 -LocalDbMsiPath $msi -targetVersion $tv
+break
 
 #ssdt - set up vars
 $svrConnstring = "SERVER=(LocalDB)\TestDeploy;Integrated Security=True;Database=master"

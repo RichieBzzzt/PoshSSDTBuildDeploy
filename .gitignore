@@ -2,3 +2,7 @@
 tests/wwi-dw-ssdt/bin/
 
 tests/wwi-dw-ssdt/obj/
+
+tests/Microsoft\.SQL\.Server\.2016\.LocalDB/Microsoft\.SQL\.Server\.2016\.LocalDB\.nupkg
+
+tests/nuget\.exe
