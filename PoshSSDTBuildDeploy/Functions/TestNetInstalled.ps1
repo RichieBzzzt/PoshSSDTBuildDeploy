@@ -1,3 +1,4 @@
+#ther should be some comments here!
 Function Test-NetInstalled {
     
         param(
