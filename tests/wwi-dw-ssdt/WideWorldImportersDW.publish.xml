@@ -9,4 +9,9 @@
     <CreateNewDatabase>True</CreateNewDatabase>
     <ProfileVersionNumber>1</ProfileVersionNumber>
   </PropertyGroup>
+  <ItemGroup>
+    <SqlCmdVariable Include="DeployTag">
+      <Value>OldValue</Value>
+    </SqlCmdVariable>
+  </ItemGroup>
 </Project>

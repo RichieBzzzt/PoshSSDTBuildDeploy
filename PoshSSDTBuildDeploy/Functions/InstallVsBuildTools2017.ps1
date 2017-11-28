@@ -1,9 +1,11 @@
 function Install-VsBuildTools2017 {
+    param ( [string] $WorkingFolder
+)
     $download = "https://download.visualstudio.microsoft.com/download/pr/100285490/e64d79b40219aea618ce2fe10ebd5f0d/vs_BuildTools.exe"
     $MSBuildPath = "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin"
     if (!(Test-Path $MSBuildPath)) {
         Write-Warning "no msbuild. Am attempting to install."
-        $MSBuildInstaller = Join-Path -Path $PSScriptRoot -ChildPath "vs_BuildTools.exe"
+        $MSBuildInstaller = Join-Path -Path $WorkingFolder -ChildPath "vs_BuildTools.exe"
         Invoke-WebRequest -Uri $download -OutFile  $MSBuildInstaller 
         If ((Test-Path $MSBuildInstaller)) {
             "File downloaded!"
@@ -13,7 +15,8 @@ function Install-VsBuildTools2017 {
         }
         "attempting to install..."
         try {
-            $installVs2017BuildTools = Start-Process -FilePath .\InstallVs2017Tools.bat -Wait -PassThru -WorkingDirectory $PSScriptRoot -NoNewWindow
+            $args = " --quiet --norestart --wait --add Microsoft.VisualStudio.Workload.MSBuildTools"
+            $installVs2017BuildTools = Start-Process $MSBuildInstaller -ArgumentList $args -Wait -PassThru -WorkingDirectory $WorkingFolder -NoNewWindow
         }
         catch {
             $_.Exception

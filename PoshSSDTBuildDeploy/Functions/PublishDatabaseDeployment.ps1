@@ -6,6 +6,7 @@ Function Publish-DatabaseDeployment {
         , $publishXml
         , $targetConnectionString
         , $targetDatabaseName
+        ,[Switch] $getSqlCmdVars
     )
     Write-Verbose 'Testing if DACfx was installed...' -Verbose
     Write-Verbose $dacfxPath -Verbose
@@ -37,6 +38,9 @@ Function Publish-DatabaseDeployment {
     else {
         Write-Verbose "$publishXml not found!" -Verbose
         throw
+    }
+    if ($getSqlCmdVars) {
+        Get-SqlCmdVariablesForPublishProfile $dacProfile.DeployOptions.SqlCommandVariableValues
     }
     $dacServices = New-Object Microsoft.SqlServer.Dac.DacServices $targetConnectionString
     try {
