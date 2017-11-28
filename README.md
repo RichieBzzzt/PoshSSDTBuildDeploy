@@ -12,7 +12,7 @@ Initial upload of build and deploy using PowerShell and Microsoft.Data.Tools.MSB
 
 
 ## How To 
-Consult the [Test Script] (https://github.com/RichieBzzzt/PoshSSDTBuildDeploy/blob/master/tests/run_test.ps1) in the repo for a sample of how to use this module to build and deploy.
+Consult the [Test Script](https://github.com/RichieBzzzt/PoshSSDTBuildDeploy/blob/master/tests/run_test.ps1) in the repo for a sample of how to use this module to build and deploy.
 
 Each Function should have it's own helping headers... eventually.
 
@@ -25,6 +25,9 @@ The basic process is
 * Deploy DACPAC
 
 This test script includes a step to create a localdb instance to deploy to. Therefore this test script shouldrun without having to set up anything else.
+
+## How Do I Update SQLCMDVars in a Publish.XML File?
+If you have SqlCmdVariables that need updating, you can do this by including the 'getSqlCmdVars' switch when executing the [Publish-DatabaseDeployment](https://github.com/RichieBzzzt/PoshSSDTBuildDeploy/blob/master/PoshSSDTBuildDeploy/Functions/PublishDatabaseDeployment.ps1) Function. By adding this swtich the function [Get-SqlCmdVars](https://github.com/RichieBzzzt/PoshSSDTBuildDeploy/blob/master/PoshSSDTBuildDeploy/Functions/GetSqlCmdVars.ps1) is executed. This will attempt to update the values of each SqlCmdVar in the publish.xml file with the value of a PowerShell variable that has to be named identically to that of the element.  
 
 ## Install LocalDB
 There are 3 Functions to help getting LocalDB installed. 
