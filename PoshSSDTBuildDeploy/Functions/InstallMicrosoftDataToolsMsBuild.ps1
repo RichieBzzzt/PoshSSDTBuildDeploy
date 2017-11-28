@@ -13,7 +13,7 @@ function Install-MicrosoftDataToolsMSBuild {
 
     Write-Verbose "DataToolsVersion : $DataToolsMsBuildPackageVersion" -Verbose
     Write-Warning "If DataToolsVersion is blank latest will be used"
-    $NugetExe = "$PsScriptRoot\nuget.exe"
+    $NugetExe = "$WorkingFolder\nuget.exe"
     if (-not (Test-Path $NugetExe)) {
         Write-Host "Cannot find nuget at path $NugetPath\nuget.exe"
         Write-Host "Downloading Latest copy of NuGet!"
