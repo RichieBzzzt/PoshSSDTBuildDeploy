@@ -26,3 +26,9 @@ The basic process is
 
 This test script includes a step to create a localdb instance to deploy to. Therefore this test script shouldrun without having to set up anything else.
 
+## Install LocalDB
+There are 3 Functions to help getting LocalDB installed. 
+Get-LocalDb2016 -  downloads MSI fromMicrosoft.
+Get-LocalDB2016NuGet - Uses NuGet package of LocalDB (justthe MSI uploaded to NuGet by me). This way we can specify a version.
+Install-LocalDb2016 - Using the MIS downloaded from wither of previous functions, checks if LocalDB is installed. If not wil install. If it is, do nothing.
+
