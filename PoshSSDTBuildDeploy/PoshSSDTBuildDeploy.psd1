@@ -65,6 +65,7 @@
     'Test-NetInstalled',
     'Install-VsBuildTools2017',
     "Get-LocalDb2016",
+    "Get-LocalDb2016NuGet",
     "Install-LocalDb2016"
     )
     # Cmdlets to export from this module

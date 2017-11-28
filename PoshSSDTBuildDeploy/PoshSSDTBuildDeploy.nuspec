@@ -9,7 +9,7 @@
 <files>
 <file src="PoshSSDTBuildDeploy.psd1"/>
 <file src="PoshSSDTBuildDeploy.psm1"/>
-<file src="readme.md"/>
+<file src="..\readme.md"/>
 <file src="Functions\InstallMicrosoftDataToolsMsBuild.ps1" target="Functions"/>
 <file src="Functions\InstallVsBuildTools2017.ps1" target="Functions"/>
 <file src="Functions\InvokeMSBuildSSDT.ps1" target="Functions"/>
@@ -21,6 +21,6 @@
 <file src="Functions\GetLocalDb2016NuGet.ps1" target="Functions"/>
 <file src="Functions\InstallLocalDb2016.ps1" target="Functions"/>
 <file src="Functions\InstallNuGet.ps1" target="Functions"/>
-<file src="Functions\TetDownloadUri.ps1" target="Functions"/>
+<file src="Functions\TestDownloadUri.ps1" target="Functions"/>
 </files>
 </package>
