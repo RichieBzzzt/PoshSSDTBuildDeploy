@@ -40,7 +40,7 @@ Function Publish-DatabaseDeployment {
         throw
     }
     if ($getSqlCmdVars) {
-        Get-SqlCmdVariablesForPublishProfile $dacProfile.DeployOptions.SqlCommandVariableValues
+        Get-SqlCmdVars $dacProfile.DeployOptions.SqlCommandVariableValues
     }
     $dacServices = New-Object Microsoft.SqlServer.Dac.DacServices $targetConnectionString
     try {

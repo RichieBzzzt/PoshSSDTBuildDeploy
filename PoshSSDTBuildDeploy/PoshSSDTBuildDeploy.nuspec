@@ -15,7 +15,7 @@
 <file src="Functions\InvokeMSBuildSSDT.ps1" target="Functions"/>
 <file src="Functions\PublishDatabaseDeployment.ps1" target="Functions"/>
 <file src="Functions\TestNetInstalled.ps1" target="Functions"/>
-<file src="Functions\InstallVs2017Tools.bat" target="Functions"/>
+<file src="Functions\GetSqlCmdVars.ps1" target="Functions"/>
 <file src="Functions\TestDownloadUri.ps1" target="Functions"/>
 <file src="Functions\GetLocalDb2016.ps1" target="Functions"/>
 <file src="Functions\GetLocalDb2016NuGet.ps1" target="Functions"/>

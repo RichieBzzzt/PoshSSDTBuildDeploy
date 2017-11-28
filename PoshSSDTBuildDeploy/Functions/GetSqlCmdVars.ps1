@@ -1,5 +1,5 @@
 
-function Get-SqlCmdVariablesForPublishProfile {
+function Get-SqlCmdVars {
     [CmdletBinding()]
     param
     (
