@@ -5,14 +5,14 @@ Clear-Host
 #ipmo
 Import-Module (Join-Path $PSScriptRoot "..\PoshSSDTBuildDeploy") -Force
 
-#localdb
-$loc = $PSScriptRoot
-$tv = "13.1.4001.0"
-#either/or 
-$msi = Get-LocalDb2016 -WorkingFolder $loc -targetVersion $tv -Verbose
-#$msi = Get-LocalDb2016NuGet -WorkingFolder $loc -targetVersion $tv -Verbose
-#then pass msi here
-Install-LocalDb2016 -LocalDbMsiPath $msi -targetVersion $tv
+# #localdb
+# $loc = $PSScriptRoot
+# $tv = "13.1.4001.0"
+# #either/or 
+# $msi = Get-LocalDb2016 -WorkingFolder $loc -targetVersion $tv -Verbose
+# #$msi = Get-LocalDb2016NuGet -WorkingFolder $loc -targetVersion $tv -Verbose
+# #then pass msi here
+# Install-LocalDb2016 -LocalDbMsiPath $msi -targetVersion $tv
 
 #ssdt - set up vars
 $svrConnstring = "SERVER=(localdb)\MSSQLLocalDB;Integrated Security=True;Database=master"
@@ -25,11 +25,29 @@ $WWI_DACPAC = Join-Path $WWI "\bin\Debug\WideWorldImportersDW.dacpac"
 $WWI_PUB = Join-Path $WWI "\bin\Debug\WideWorldImportersDW.publish.xml"
 
 #setup dependencies for build
-Write-Host $MyInvocation.MyCommand.Path
 Install-VsBuildTools2017 -WorkingFolder $WWI
 #get datatoolsmsbuild
-Install-MicrosoftDataToolsMSBuild -WorkingFolder $WWI
+Install-MicrosoftDataToolsMSBuild -WorkingFolder $WWI 
+
+Install-MicrosoftDataToolsMSBuild -WorkingFolder $WWI -DataToolsMsBuildPackageVersion "10.0.61026"
+#should fail
+#Install-MicrosoftDataToolsMSBuild -WorkingFolder $WWI -DataToolsMsBuildPackageVersion "10.0.60809"
 #build
 Invoke-MsBuildSSDT -DatabaseSolutionFilePath $WWI_SLN -DataToolsFilePath $WWI_DAC 
 #deploy
-Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_NAME #-getSqlCmdVars
+Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_NAME -GenerateDeploymentScript $false -GenerateDeployMentReport $false -ScriptPath $WWI #-getSqlCmdVars
+
+Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_NAME -GenerateDeploymentScript $true -GenerateDeployMentReport $false -ScriptPath $WWI #-getSqlCmdVars
+
+Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_NAME -GenerateDeploymentScript $false -GenerateDeployMentReport $true -ScriptPath $WWI #-getSqlCmdVars
+
+Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_NAME -GenerateDeploymentScript $true -GenerateDeployMentReport $true -ScriptPath $WWI #-getSqlCmdVars
+
+#script only
+Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_NAME -GenerateDeploymentScript $true -GenerateDeployMentReport $false -ScriptPath $WWI -ScriptOnly #-getSqlCmdVars
+
+Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_NAME -GenerateDeploymentScript $false -GenerateDeployMentReport $true -ScriptPath $WWI -ScriptOnly #-getSqlCmdVars
+
+Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_NAME -GenerateDeploymentScript $true -GenerateDeployMentReport $true -ScriptPath $WWI -ScriptOnly #-getSqlCmdVars
+#should fail
+#Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_NAME -GenerateDeploymentScript $false -GenerateDeployMentReport $false -ScriptPath $WWI -ScriptOnly #-getSqlCmdVars
