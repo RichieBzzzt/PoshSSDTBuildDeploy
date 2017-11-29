@@ -6,8 +6,19 @@ Function Publish-DatabaseDeployment {
         , $publishXml
         , $targetConnectionString
         , $targetDatabaseName
-        ,[Switch] $getSqlCmdVars
+        , [Switch] $getSqlCmdVars
+        , [bool] $GenerateDeploymentScript
+        , [bool] $GenerateDeploymentReport 
+        , $ScriptPath 
+
+
     )
+    if ($GenerateDeploymentScript -eq $true -or $GenerateDeploymentReport -eq $true) {
+        if (-not (Test-Path $ScriptPath)) {
+            Write-Error "Script Path Invalid!"
+            Throw
+        }
+    }
     Write-Verbose 'Testing if DACfx was installed...' -Verbose
     Write-Verbose $dacfxPath -Verbose
     if (!$dacfxPath) {
@@ -42,11 +53,23 @@ Function Publish-DatabaseDeployment {
     if ($getSqlCmdVars) {
         Get-SqlCmdVars $dacProfile.DeployOptions.SqlCommandVariableValues
     }
+    $timeStamp = (Get-Date).ToString("yyMMdd_HHmmss_f")    
+    $DatabaseScriptPath = Join-Path $ScriptPath "$($targetDatabaseName)_DeployScript_$timeStamp.sql"
+    $MasterDbScriptPath = Join-Path $ScriptPath "($targetDatabaseName)_Master.DeployScript_$timeStamp.sql"
+    $DeploymentReport = Join-Path $ScriptPath "$targetDatabaseName.Result.DeploymentReport_$timeStamp.xml"
+
     $dacServices = New-Object Microsoft.SqlServer.Dac.DacServices $targetConnectionString
+    $options = @{
+        GenerateDeploymentScript = $GenerateDeploymentScript
+        GenerateDeploymentReport = $GenerateDeploymentReport
+        DatabaseScriptPath       = $DatabaseScriptPath
+        MasterDbScriptPath       = $MasterDbScriptPath
+        DeployOptions            = $dacProfile.DeployOptions
+    }
     try {
         Write-Host "Executing Deployment..." -ForegroundColor Yellow
         Register-ObjectEvent -InputObject $dacServices -EventName "Message" -Source "msg" -Action { Write-Host $EventArgs.Message.Message } | Out-Null       
-        $dacServices.Deploy($dacPackage, $targetDatabaseName, $true, $dacProfile.DeployOptions, $null)
+        $result = $dacServices.publish($dacPackage, $targetDatabaseName, $options)
         Write-Host "Deployment successful!" -ForegroundColor DarkGreen
     }  
     catch [Microsoft.SqlServer.Dac.DacServicesException] {
@@ -56,6 +79,16 @@ Function Publish-DatabaseDeployment {
         Unregister-Event -SourceIdentifier "msg"
         if ($toThrow) {
             Throw $toThrow
+        }
+        if ($GenerateDeploymentReport -eq $true) {
+            $result.DeploymentReport | Out-File $DeploymentReport
+            Write-Host "Deployment Report - $DeploymentReport" -ForegroundColor DarkGreen -BackgroundColor White
+        }
+        if ($GenerateDeploymentScript -eq $true) {
+            Write-Host "Database change script - $DatabaseScriptPath" -ForegroundColor White -BackgroundColor DarkCyan
+            if ((Test-Path $MasterDbScriptPath) -eq $true) {
+                Write-Host "Master database change script - $($result.MasterDbScript)" -ForegroundColor White -BackgroundColor DarkGreen
+            }
         }
     }
 }
