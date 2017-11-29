@@ -49,6 +49,12 @@ The above sample set the path to the directroy where the sqlproj file is, and al
 
 ### How To Publish DACPAC
 Use [Publish-DatabaseDeployment](https://github.com/RichieBzzzt/PoshSSDTBuildDeploy/blob/master/PoshSSDTBuildDeploy/Functions/PublishDatabaseDeployment.ps1), passsing in the location to the dac dll, the location of the dac dll, the publish file and the dacpac.
+
+As of version 2, there are four new options on the function - 
+* -GenerateDeploymentScript - boolean - determines whether Deployment Script is generated.
+* -GenerateDeployMentReport - boolean - determines whether Deployment Report is generated.
+* -ScriptPath - string - fodler path where the scriptsa re goingto be created.
+* -ScriptOnly (optional, see **How To Only Script Changes Instaead of Deploying?** for more info)
 ```powershell
 $WWI = Join-Path $PSScriptRoot "wwi-dw-ssdt"
 $WWI_DAC = Join-Path $WWI "\Microsoft.Data.Tools.Msbuild\lib\net46"
@@ -67,3 +73,9 @@ So in the [publish.xml](https://github.com/RichieBzzzt/PoshSSDTBuildDeploy/blob/
 $DeployTag = "NewValue"
 Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_NAME #-getSqlCmdVars
 ```
+
+### How To Only Script Changes Instaead of Deploying?
+
+Use the ```-ScriptOnly``` Flag on Publish-DatabaseDeployment. For this to work either ```-GenerateDeployMentReport``` or ```-GenerateDeploymentScript``` must be set to ```$true```.
+
+
