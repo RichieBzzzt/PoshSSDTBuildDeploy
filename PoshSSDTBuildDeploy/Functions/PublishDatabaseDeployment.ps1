@@ -10,6 +10,7 @@ Function Publish-DatabaseDeployment {
         , [bool] $GenerateDeploymentScript
         , [bool] $GenerateDeploymentReport 
         , $ScriptPath 
+        , [Switch] $ScriptOnly
 
 
     )
@@ -67,10 +68,17 @@ Function Publish-DatabaseDeployment {
         DeployOptions            = $dacProfile.DeployOptions
     }
     try {
-        Write-Host "Executing Deployment..." -ForegroundColor Yellow
-        Register-ObjectEvent -InputObject $dacServices -EventName "Message" -Source "msg" -Action { Write-Host $EventArgs.Message.Message } | Out-Null       
-        $result = $dacServices.publish($dacPackage, $targetDatabaseName, $options)
-        Write-Host "Deployment successful!" -ForegroundColor DarkGreen
+        Register-ObjectEvent -InputObject $dacServices -EventName "Message" -Source "msg" -Action { Write-Host $EventArgs.Message.Message } | Out-Null  
+        if ($ScriptOnly) {
+            Write-Host "Generating script..." -ForegroundColor Yellow
+            $result = $dacServices.script($dacPackage, $targetDatabaseName, $options)
+            Write-Host "Script created!" -ForegroundColor DarkGreen
+        }
+        else {
+            Write-Host "Executing Deployment..." -ForegroundColor Yellow     
+            $result = $dacServices.publish($dacPackage, $targetDatabaseName, $options)
+            Write-Host "Deployment successful!" -ForegroundColor DarkGreen
+        }
     }  
     catch [Microsoft.SqlServer.Dac.DacServicesException] {
         $toThrow = ('Deployment failed: ''{0}'' Reason: ''{1}''' -f $_.Exception.Message, $_.Exception.InnerException.Message)
