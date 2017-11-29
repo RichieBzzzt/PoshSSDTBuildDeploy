@@ -70,9 +70,14 @@ Function Publish-DatabaseDeployment {
     try {
         Register-ObjectEvent -InputObject $dacServices -EventName "Message" -Source "msg" -Action { Write-Host $EventArgs.Message.Message } | Out-Null  
         if ($ScriptOnly) {
-            Write-Host "Generating script..." -ForegroundColor Yellow
-            $result = $dacServices.script($dacPackage, $targetDatabaseName, $options)
-            Write-Host "Script created!" -ForegroundColor DarkGreen
+            if (($GenerateDeploymentScript -eq $false) -and ($GenerateDeploymentReport -eq $false)) {
+                $ToThrow = "Specify at least one of GenerateDeploymentScript or GenerateDeploymentReport to be true when using ScriptOnly!"
+            }
+            else {
+                Write-Host "Generating script..." -ForegroundColor Yellow
+                $result = $dacServices.script($dacPackage, $targetDatabaseName, $options)
+                Write-Host "Script created!" -ForegroundColor DarkGreen
+            }
         }
         else {
             Write-Host "Executing Deployment..." -ForegroundColor Yellow     
