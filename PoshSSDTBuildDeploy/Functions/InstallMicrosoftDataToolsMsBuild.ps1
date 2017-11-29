@@ -26,12 +26,12 @@ function Install-MicrosoftDataToolsMSBuild {
         }
     $nugetInstallMsbuild = "&$NugetExe install Microsoft.Data.Tools.Msbuild -ExcludeVersion -OutputDirectory $WorkingFolder"
     if ($DataToolsMsBuildPackageVersion) {
-        if ($DataToolsMsBuildPackageVersion -lt 10.0.61026)
+        if ($DataToolsMsBuildPackageVersion -lt "10.0.61026")
         {
             Write-Error "Lower versions than 10.0.61026 will NOT work with Publish-DatabaseDeployment. For more information, read the post https://blogs.msdn.microsoft.com/ssdt/2016/10/20/sql-server-data-tools-16-5-release/"
             Throw
         }
-        $nugetInstallMsbuild += "-version '$DataToolsMsBuildPackageVersion'"
+        $nugetInstallMsbuild += " -version '$DataToolsMsBuildPackageVersion'"
     }
     Write-Host $nugetInstallMsbuild -BackgroundColor White -ForegroundColor DarkGreen
     Invoke-Expression $nugetInstallMsbuild

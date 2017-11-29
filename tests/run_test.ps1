@@ -24,13 +24,17 @@ $WWI_DACFX = Join-Path $WWI_DAC "\Microsoft.SqlServer.Dac.dll"
 $WWI_DACPAC = Join-Path $WWI "\bin\Debug\WideWorldImportersDW.dacpac"
 $WWI_PUB = Join-Path $WWI "\bin\Debug\WideWorldImportersDW.publish.xml"
 
-# #setup dependencies for build
-# Install-VsBuildTools2017 -WorkingFolder $WWI
-# #get datatoolsmsbuild
-# Install-MicrosoftDataToolsMSBuild -WorkingFolder $WWI
-# #build
-# Invoke-MsBuildSSDT -DatabaseSolutionFilePath $WWI_SLN -DataToolsFilePath $WWI_DAC 
-# #deploy
+#setup dependencies for build
+Install-VsBuildTools2017 -WorkingFolder $WWI
+#get datatoolsmsbuild
+Install-MicrosoftDataToolsMSBuild -WorkingFolder $WWI 
+
+Install-MicrosoftDataToolsMSBuild -WorkingFolder $WWI -DataToolsMsBuildPackageVersion "10.0.61026"
+#should fail
+#Install-MicrosoftDataToolsMSBuild -WorkingFolder $WWI -DataToolsMsBuildPackageVersion "10.0.60809"
+#build
+Invoke-MsBuildSSDT -DatabaseSolutionFilePath $WWI_SLN -DataToolsFilePath $WWI_DAC 
+#deploy
 Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_NAME -GenerateDeploymentScript $false -GenerateDeployMentReport $false -ScriptPath $WWI #-getSqlCmdVars
 
 Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_NAME -GenerateDeploymentScript $true -GenerateDeployMentReport $false -ScriptPath $WWI #-getSqlCmdVars
@@ -46,4 +50,4 @@ Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml
 
 Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_NAME -GenerateDeploymentScript $true -GenerateDeployMentReport $true -ScriptPath $WWI -ScriptOnly #-getSqlCmdVars
 #should fail
-Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_NAME -GenerateDeploymentScript $false -GenerateDeployMentReport $false -ScriptPath $WWI -ScriptOnly #-getSqlCmdVars
+#Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_NAME -GenerateDeploymentScript $false -GenerateDeployMentReport $false -ScriptPath $WWI -ScriptOnly #-getSqlCmdVars
