@@ -14,7 +14,7 @@ Function Publish-DatabaseDeployment {
 
 
     )
-    if ($GenerateDeploymentScript -eq $true -or $GenerateDeploymentReport -eq $true) {
+    if ($ScriptPath) {
         if (-not (Test-Path $ScriptPath)) {
             Write-Error "Script Path Invalid!"
             Throw
