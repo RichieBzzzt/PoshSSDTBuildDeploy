@@ -103,5 +103,16 @@ Function Publish-DatabaseDeployment {
                 Write-Host "Master database change script - $($result.MasterDbScript)" -ForegroundColor White -BackgroundColor DarkGreen
             }
         }
+    
+        $deployOptions = $dacProfile.DeployOptions | Select-Object -Property * -ExcludeProperty "SqlCommandVariableValues"
+        [pscustomobject]@{
+            Dacpac		      = $dacpac
+            PublishXml	      = $PublishXml
+            DatabaseScriptPath = $DatabaseScriptPath
+            MasterDbScriptPath = $($result.MasterDbScript)
+            DeploymentReport  = $DeploymentReport
+            DeployOptions	  = $deployOptions
+            SqlCmdVariableValues = $dacProfile.DeployOptions.SqlCommandVariableValues.Keys
+        } | Format-List
     }
 }
