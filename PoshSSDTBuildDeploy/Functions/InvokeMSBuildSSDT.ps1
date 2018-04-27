@@ -9,7 +9,7 @@ function Invoke-MsBuildSSDT {
         $MSBuildVersionNumber = "15.0"
     }
     if ($MSBuildVersionNumber -ne "15.0") {
-        $msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\MSBuild.exe"
+        $msbuild = "C:\Program Files (x86)\Microsoft Visual Studio\2017\*\MSBuild\15.0\Bin\MSBuild.exe"
     }
     else {
         $msbuild = "C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe"
