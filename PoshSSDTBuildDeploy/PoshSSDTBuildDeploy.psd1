@@ -67,7 +67,8 @@
     "Get-LocalDb2016",
     "Get-LocalDb2016NuGet",
     "Install-LocalDb2016",
-    "Install-DotNet"
+    "Install-DotNet",
+    "Install-NuGet"
     )
     # Cmdlets to export from this module
     CmdletsToExport = '*'
