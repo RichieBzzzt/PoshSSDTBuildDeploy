@@ -66,7 +66,8 @@
     'Install-VsBuildTools2017',
     "Get-LocalDb2016",
     "Get-LocalDb2016NuGet",
-    "Install-LocalDb2016"
+    "Install-LocalDb2016",
+    "Install-DotNet"
     )
     # Cmdlets to export from this module
     CmdletsToExport = '*'
