@@ -5,8 +5,7 @@ Clear-Host
 #ipmo
 Import-Module (Join-Path $PSScriptRoot "..\PoshSSDTBuildDeploy") -Force
 
-sqllocaldb.exe create "poshssdtbuilddeploy"
-sqllocaldb.exe start "poshssdtbuilddeploy"
+sqllocaldb.exe create "poshssdtbuilddeploy" 13.0 -s
 sqllocaldb.exe info "poshssdtbuilddeploy"
 
 # #localdb
