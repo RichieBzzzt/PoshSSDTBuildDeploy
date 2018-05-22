@@ -1,0 +1,1 @@
+Invoke-Pester .\*.Tests.ps1
