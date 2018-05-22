@@ -1,5 +1,5 @@
 Function Publish-DatabaseDeployment {
-
+    [cmdletbinding()]
     param(
         $dacfxPath
         , $dacpac
@@ -16,20 +16,19 @@ Function Publish-DatabaseDeployment {
     )
     if ($ScriptPath) {
         if (-not (Test-Path $ScriptPath)) {
-            Write-Error "Script Path Invalid!"
-            Throw
+            Throw "Script Path Invalid!"            
         }
     }
-    Write-Verbose 'Testing if DACfx was installed...' -Verbose
-    Write-Verbose $dacfxPath -Verbose
+    Write-Verbose 'Testing if DACfx was installed...'
+    Write-Verbose $dacfxPath
     if (!$dacfxPath) {
         throw 'No usable version of Dac Fx found.'
     }
     else {
         try {
-            Write-Verbose 'DacFX found, attempting to load DAC assembly...' -Verbose
+            Write-Verbose 'DacFX found, attempting to load DAC assembly...'
             Add-Type -Path $dacfxPath
-            Write-Verbose 'Loaded DAC assembly.' -Verbose
+            Write-Verbose 'Loaded DAC assembly.'
         }
         catch [System.Management.Automation.RuntimeException] {
             throw "Exception caught: " + $_.Exception.GetType().FullName
