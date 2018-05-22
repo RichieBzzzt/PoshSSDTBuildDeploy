@@ -1,7 +1,7 @@
 #import module from repo
 Import-Module (Join-Path $PSScriptRoot "..\PoshSSDTBuildDeploy") -Force
 
-Describe "Tests" {
+Describe "Install-MicrosoftDataToolsMSBuild" {
     $WWI = Join-Path $PSScriptRoot "wwi-dw-ssdt"
     It "should install MicrosoftDataToolsMSBuild 10.0.61026" {
         {Install-MicrosoftDataToolsMSBuild -WorkingFolder $WWI -DataToolsMsBuildPackageVersion "10.0.61026"} | Should -Not -Throw

@@ -12,9 +12,29 @@ PowerShell Module designed to make use of [Microsoft.Data.Tools.MSBuild](https:/
 
 
 ## How To's
-Consult the [Test Script](https://github.com/RichieBzzzt/PoshSSDTBuildDeploy/blob/master/tests/run_test.ps1) in the repo for a sample of how to use this module to build and deploy.
+To test all the scripts locally 
+```shell
+C:\..\PoshSSDTBuildDeploy> cd tests
+C:\..\PoshSSDTBuildDeploy\tests> .\Invoke-Tests.ps1
 
-Each Function should have it's own helping headers... eventually. Currnetly only the ones that pertain to LocalDB install do.
+Executing all tests in '.\*.Tests.ps1'
+
+Executing script C:\projects\PoshSSDTBuildDeploy\tests\Install-MicrosoftDataToolsMSBuild.Tests.ps1
+
+  Describing Install-MicrosoftDataToolsMSBuild
+    [+] should install MicrosoftDataToolsMSBuild 10.0.61026 91ms
+  ...
+  ...
+  ...
+  Describing Publish-DatabaseDeployment
+    [+] throws exception if not at least one of GenerateDeploymentScript or GenerateDeploymentReport is true when using ScriptOnly 73ms
+    [+] throws exception if Script Path is Invalid 55ms
+Tests completed in 36.66s
+Tests Passed: 12, Failed: 0, Skipped: 0, Pending: 0, Inconclusive: 0
+```
+Consult the `/tests/*.Tests.ps1` files in the repo for samples of how to use this module to build and deploy.
+
+Each Function should have it's own helping headers... eventually. Currently only the ones that pertain to LocalDB install do.
 
 The basic process is 
 
