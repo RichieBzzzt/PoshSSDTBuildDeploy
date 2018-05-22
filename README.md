@@ -13,7 +13,7 @@ PowerShell Module designed to make use of [Microsoft.Data.Tools.MSBuild](https:/
 
 ## How To's
 To test all the scripts locally 
-```shell
+```
 C:\..\PoshSSDTBuildDeploy> cd tests
 C:\..\PoshSSDTBuildDeploy\tests> .\Invoke-Tests.ps1
 
