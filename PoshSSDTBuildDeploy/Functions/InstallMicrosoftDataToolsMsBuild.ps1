@@ -1,16 +1,15 @@
 
 
 function Install-MicrosoftDataToolsMSBuild {
-
-    param ( [string] $WorkingFolder
-        , [string] $DataToolsMsBuildPackageVersion
+    [cmdletbinding()]
+    param ( 
+        [parameter(Mandatory)]
+        [string] $WorkingFolder, 
+        [string] $DataToolsMsBuildPackageVersion
     )
 
-    if (-Not $WorkingFolder) {
-        Throw "Working folder needs to be set. Its blank"
-    }
-    Write-Verbose "Verbose Folder  (with Verbose) : $WorkingFolder" -Verbose
-    Write-Verbose "DataToolsVersion : $DataToolsMsBuildPackageVersion" -Verbose
+    Write-Verbose "Verbose Folder  (with Verbose) : $WorkingFolder" 
+    Write-Verbose "DataToolsVersion : $DataToolsMsBuildPackageVersion" 
     Write-Warning "If DataToolsVersion is blank latest will be used"
     $NugetExe = "$WorkingFolder\nuget.exe"
     if (-not (Test-Path $NugetExe)) {
@@ -26,8 +25,7 @@ function Install-MicrosoftDataToolsMSBuild {
     $nugetInstallMsbuild = "&$NugetExe install Microsoft.Data.Tools.Msbuild -ExcludeVersion -OutputDirectory $WorkingFolder"
     if ($DataToolsMsBuildPackageVersion) {
         if ($DataToolsMsBuildPackageVersion -lt "10.0.61026") {
-            Write-Error "Lower versions than 10.0.61026 will NOT work with Publish-DatabaseDeployment. For more information, read the post https://blogs.msdn.microsoft.com/ssdt/2016/10/20/sql-server-data-tools-16-5-release/"
-            Throw
+            Throw "Lower versions than 10.0.61026 will NOT work with Publish-DatabaseDeployment. For more information, read the post https://blogs.msdn.microsoft.com/ssdt/2016/10/20/sql-server-data-tools-16-5-release/"            
         }
         $nugetInstallMsbuild += " -version '$DataToolsMsBuildPackageVersion'"
     }
