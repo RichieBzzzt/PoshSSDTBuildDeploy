@@ -1,5 +1,5 @@
 try{
-    Import-PackageProvider PowerShellGet -Force
+    Import-PackageProvider PowerShellGet -MinimumVersion 1.0.0.1 -Force
     }
   catch{
   Write-Error "cannot run Import-PackageProvider PowerShellGet -Force"
