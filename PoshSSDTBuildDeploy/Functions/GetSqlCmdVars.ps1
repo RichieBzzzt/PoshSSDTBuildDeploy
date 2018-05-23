@@ -3,7 +3,7 @@ function Get-SqlCmdVars {
     [CmdletBinding()]
     param
     (
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory)]
         $sqlCommandVariableValues
     )
 
