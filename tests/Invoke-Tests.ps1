@@ -10,7 +10,12 @@ try {
 }
 catch {
     write-host "Pester Module not found. Trying to install..."
+}
+try{
     Install-Module Pester -MinimumVersion 4.3.1 -Force -SkipPublisherCheck -Scope CurrentUser
+}
+catch {
+    Install-Module Pester -MinimumVersion 4.3.1 -Force -Scope CurrentUser
 }
 
 Invoke-Pester .\*.Tests.ps1
