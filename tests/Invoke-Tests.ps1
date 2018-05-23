@@ -10,6 +10,7 @@ try {
 }
 catch {
     write-host "Pester Module not found. Trying to install..."
+    Install-PackageProvider nuget -force
 }
 try{
     Install-Module Pester -MinimumVersion 4.3.1 -Force -SkipPublisherCheck -Scope CurrentUser
