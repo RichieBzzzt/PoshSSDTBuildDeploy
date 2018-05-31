@@ -7,6 +7,7 @@ Function Publish-DatabaseDeployment {
         , $targetConnectionString
         , $targetDatabaseName
         , [Switch] $getSqlCmdVars
+        , [Switch] $FailOnMissingVars
         , [bool] $GenerateDeploymentScript
         , [bool] $GenerateDeploymentReport 
         , $ScriptPath 
@@ -51,7 +52,12 @@ Function Publish-DatabaseDeployment {
         throw
     }
     if ($getSqlCmdVars) {
-        Get-SqlCmdVars $dacProfile.DeployOptions.SqlCommandVariableValues
+       if ($PSBoundParameters.ContainsKey('FailOnMissingVars') -eq $true) { 
+            Get-SqlCmdVars $dacProfile.DeployOptions.SqlCommandVariableValues -FailOnMissingVariables
+        }
+        elseif ($PSBoundParameters.ContainsKey('FailOnMissingVars') -eq $false){
+            Get-SqlCmdVars $($dacProfile.DeployOptions.SqlCommandVariableValues)
+        }
     }
     $timeStamp = (Get-Date).ToString("yyMMdd_HHmmss_f")    
     $DatabaseScriptPath = Join-Path $ScriptPath "$($targetDatabaseName)_DeployScript_$timeStamp.sql"
@@ -105,12 +111,12 @@ Function Publish-DatabaseDeployment {
     
         $deployOptions = $dacProfile.DeployOptions | Select-Object -Property * -ExcludeProperty "SqlCommandVariableValues"
         [pscustomobject]@{
-            Dacpac		      = $dacpac
-            PublishXml	      = $PublishXml
-            DatabaseScriptPath = $DatabaseScriptPath
-            MasterDbScriptPath = $($result.MasterDbScript)
-            DeploymentReport  = $DeploymentReport
-            DeployOptions	  = $deployOptions
+            Dacpac               = $dacpac
+            PublishXml           = $PublishXml
+            DatabaseScriptPath   = $DatabaseScriptPath
+            MasterDbScriptPath   = $($result.MasterDbScript)
+            DeploymentReport     = $DeploymentReport
+            DeployOptions        = $deployOptions
             SqlCmdVariableValues = $dacProfile.DeployOptions.SqlCommandVariableValues.Keys
         } | Format-List
     }

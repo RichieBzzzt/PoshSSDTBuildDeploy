@@ -1,3 +1,11 @@
+try{
+    Import-PackageProvider PowerShellGet -Force
+    }
+  catch{
+  Write-Error "cannot run Import-PackageProvider PowerShellGet -Force"
+  Throw
+  }
+
 try {
     Get-InstalledModule Pester -MinimumVersion 4.3.1 -ErrorAction Stop | Out-Null
 }
