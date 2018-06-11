@@ -15,51 +15,36 @@ Function Publish-DatabaseDeployment {
 
 
     )
-    if ($ScriptPath) {
-        if (-not (Test-Path $ScriptPath)) {
-            Throw "Script Path Invalid!"            
-        }
-    }
+    
     Write-Verbose 'Testing if DACfx was installed...'
-    Write-Verbose $dacfxPath
-    if (!$dacfxPath) {
-        throw 'No usable version of Dac Fx found.'
+    if (-not (Test-Path $dacfxPath)) { throw "No usable version of Dac Fx found at $dacfxPath" }
+    if (-not (Test-Path $dacpac)) { throw "$dacpac not found!" }
+    if (-not (Test-Path $publishXml)) { throw "$publishXml not found!" }
+    if (-not (Test-Path $ScriptPath)) { Throw "Script Path Invalid!" }
+
+    try {
+        Write-Verbose 'DacFX found, attempting to load DAC assembly...'
+        Add-Type -Path $dacfxPath
+        Write-Verbose 'Loaded DAC assembly.'
     }
-    else {
-        try {
-            Write-Verbose 'DacFX found, attempting to load DAC assembly...'
-            Add-Type -Path $dacfxPath
-            Write-Verbose 'Loaded DAC assembly.'
-        }
-        catch [System.Management.Automation.RuntimeException] {
-            throw "Exception caught: " + $_.Exception.GetType().FullName
-        }
+    catch [System.Management.Automation.RuntimeException] {
+        throw ("Exception caught: {0}" -f $_.Exception.GetType().FullName)
     }
-    if (Test-Path $dacpac) {
-        $dacPackage = [Microsoft.SqlServer.Dac.DacPackage]::Load($Dacpac)
-        Write-Host ('Loaded dacpac ''{0}''.' -f $Dacpac) -ForegroundColor White -BackgroundColor DarkMagenta
-    }
-    else {
-        Write-Verbose "$dacpac not found!" -Verbose
-        throw
-    }
-    if (Test-Path $publishXml) {
-        $dacProfile = [Microsoft.SqlServer.Dac.DacProfile]::Load($publishXml)
-        Write-Host ('Loaded publish profile ''{0}''.' -f $publishXml) -ForegroundColor White -BackgroundColor DarkMagenta
-    }
-    else {
-        Write-Verbose "$publishXml not found!" -Verbose
-        throw
-    }
+    
+    $dacPackage = [Microsoft.SqlServer.Dac.DacPackage]::Load($Dacpac)
+    Write-Host ("Loaded dacpac '{0}'." -f $Dacpac) -ForegroundColor White -BackgroundColor DarkMagenta
+    
+    $dacProfile = [Microsoft.SqlServer.Dac.DacProfile]::Load($publishXml)
+    Write-Host ("Loaded publish profile '{0}'." -f $publishXml) -ForegroundColor White -BackgroundColor DarkMagenta
     if ($getSqlCmdVars) {
        if ($PSBoundParameters.ContainsKey('FailOnMissingVars') -eq $true) { 
             Get-SqlCmdVars $dacProfile.DeployOptions.SqlCommandVariableValues -FailOnMissingVariables
         }
-        elseif ($PSBoundParameters.ContainsKey('FailOnMissingVars') -eq $false){
+        else {
             Get-SqlCmdVars $($dacProfile.DeployOptions.SqlCommandVariableValues)
         }
     }
-    $timeStamp = (Get-Date).ToString("yyMMdd_HHmmss_f")    
+    $timeStamp = Get-Date -Format "yyMMdd_HHmmss_f"
     $DatabaseScriptPath = Join-Path $ScriptPath "$($targetDatabaseName)_DeployScript_$timeStamp.sql"
     $MasterDbScriptPath = Join-Path $ScriptPath "($targetDatabaseName)_Master.DeployScript_$timeStamp.sql"
     $DeploymentReport = Join-Path $ScriptPath "$targetDatabaseName.Result.DeploymentReport_$timeStamp.xml"
@@ -76,13 +61,11 @@ Function Publish-DatabaseDeployment {
         Register-ObjectEvent -InputObject $dacServices -EventName "Message" -Source "msg" -Action { Write-Host $EventArgs.Message.Message } | Out-Null  
         if ($ScriptOnly) {
             if (($GenerateDeploymentScript -eq $false) -and ($GenerateDeploymentReport -eq $false)) {
-                $ToThrow = "Specify at least one of GenerateDeploymentScript or GenerateDeploymentReport to be true when using ScriptOnly!"
+                throw "Specify at least one of GenerateDeploymentScript or GenerateDeploymentReport to be true when using ScriptOnly!"
             }
-            else {
-                Write-Host "Generating script..." -ForegroundColor Yellow
-                $result = $dacServices.script($dacPackage, $targetDatabaseName, $options)
-                Write-Host "Script created!" -ForegroundColor DarkGreen
-            }
+            Write-Host "Generating script..." -ForegroundColor Yellow
+            $result = $dacServices.script($dacPackage, $targetDatabaseName, $options)
+            Write-Host "Script created!" -ForegroundColor DarkGreen
         }
         else {
             Write-Host "Executing Deployment..." -ForegroundColor Yellow     
@@ -91,7 +74,7 @@ Function Publish-DatabaseDeployment {
         }
     }  
     catch [Microsoft.SqlServer.Dac.DacServicesException] {
-        $toThrow = ('Deployment failed: ''{0}'' Reason: ''{1}''' -f $_.Exception.Message, $_.Exception.InnerException.Message)
+        $toThrow = ("Deployment failed: '{0}' Reason: '{1}'" -f $_.Exception.Message, $_.Exception.InnerException.Message)
     }
     finally {
         Unregister-Event -SourceIdentifier "msg"

@@ -11,8 +11,6 @@ function Get-SqlCmdVars {
 
     # track any missing variables so provide more helpful error messages
     $missingOctopusVariables = @()
-    Write-Host "Value of `$FailOnMissingVariables = $FailOnMissingVariables, NullOrEmpty $([string]::IsNullOrEmpty($FailOnMissingVariables)), $($PSBoundParameters.ContainsKey('FailOnMissingVariables'))"
-
     $keys = $($sqlCommandVariableValues.Keys)
     foreach ($var in $keys) {
         # Attempt to resolve SQLCmd variables via matching powershell variables explicitly defined in the current context
