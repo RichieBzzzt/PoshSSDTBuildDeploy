@@ -40,6 +40,13 @@ Describe "Publish-DatabaseDeployment" {
         $DeploymentScriptPathPattern | Should -Not -Exist
         $DeploymentReportPathPattern | Should -Not -Exist
     }
+    it "Deploy the database and DeploymentScript is not generated and DeploymentReport is not generated and Missing Variable is written to Host" {
+        {Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_NAME -GenerateDeploymentScript $false -GenerateDeploymentReport $false -ScriptPath $WWI -getSqlCmdVars } | Should -Not -Throw
+        Get-DbId -databaseName $WWI_NAME -serverInstanceName $serverInstance | Should -Not -BeNullOrEmpty
+        $DeploymentScriptPathPattern | Should -Not -Exist
+        $DeploymentReportPathPattern | Should -Not -Exist
+    }
+
     it "Deploy the database and DeploymentScript is generated and DeploymentReport is not generated" {
         {Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_NAME -GenerateDeploymentScript $true -GenerateDeploymentReport $false -ScriptPath $WWI } | Should -Not -Throw
         Get-DbId -databaseName $WWI_NAME -serverInstanceName $serverInstance | Should -Not -BeNullOrEmpty
@@ -83,5 +90,17 @@ Describe "Publish-DatabaseDeployment" {
     it "throws exception if Script Path is Invalid" {
         {Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_NAME -GenerateDeploymentScript $false -GenerateDeployMentReport $false -ScriptPath "X:\bob" } |
             Should -Throw "Script Path Invalid"
+    }
+    it "Throws exception that variable is not included in session" {
+        {Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_NAME -GenerateDeploymentScript $false -GenerateDeploymentReport $false -ScriptPath $WWI -getSqlCmdVars -FailOnMissingVars } | 
+            Should -Throw
+    }
+    it "Deploy the database and DeploymentScript is not generated and DeploymentReport is not generated and DeployTag is updated to PesterTest" {
+        {$DeployTag = "PesterTest"
+        Write-Host $DeployTag
+            Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_NAME -GenerateDeploymentScript $false -GenerateDeploymentReport $false -ScriptPath $WWI -getSqlCmdVars } | Should -Not -Throw
+        Get-DbId -databaseName $WWI_NAME -serverInstanceName $serverInstance | Should -Not -BeNullOrEmpty
+        $DeploymentScriptPathPattern | Should -Not -Exist
+        $DeploymentReportPathPattern | Should -Not -Exist
     }
 }

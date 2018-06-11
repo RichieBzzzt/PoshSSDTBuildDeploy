@@ -7,6 +7,7 @@ Function Publish-DatabaseDeployment {
         , $targetConnectionString
         , $targetDatabaseName
         , [Switch] $getSqlCmdVars
+        , [Switch] $FailOnMissingVars
         , [bool] $GenerateDeploymentScript
         , [bool] $GenerateDeploymentReport 
         , $ScriptPath 
@@ -36,7 +37,12 @@ Function Publish-DatabaseDeployment {
     $dacProfile = [Microsoft.SqlServer.Dac.DacProfile]::Load($publishXml)
     Write-Host ("Loaded publish profile '{0}'." -f $publishXml) -ForegroundColor White -BackgroundColor DarkMagenta
     if ($getSqlCmdVars) {
-        Get-SqlCmdVars $dacProfile.DeployOptions.SqlCommandVariableValues    
+       if ($PSBoundParameters.ContainsKey('FailOnMissingVars') -eq $true) { 
+            Get-SqlCmdVars $dacProfile.DeployOptions.SqlCommandVariableValues -FailOnMissingVariables
+        }
+        else {
+            Get-SqlCmdVars $($dacProfile.DeployOptions.SqlCommandVariableValues)
+        }
     }
     $timeStamp = Get-Date -Format "yyMMdd_HHmmss_f"
     $DatabaseScriptPath = Join-Path $ScriptPath "$($targetDatabaseName)_DeployScript_$timeStamp.sql"
