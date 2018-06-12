@@ -12,8 +12,6 @@ Function Publish-DatabaseDeployment {
         , [bool] $GenerateDeploymentReport 
         , $ScriptPath 
         , [Switch] $ScriptOnly
-
-
     )
     if ($ScriptPath) {
         if (-not (Test-Path $ScriptPath)) {
@@ -52,10 +50,10 @@ Function Publish-DatabaseDeployment {
         throw
     }
     if ($getSqlCmdVars) {
-       if ($PSBoundParameters.ContainsKey('FailOnMissingVars') -eq $true) { 
+        if ($PSBoundParameters.ContainsKey('FailOnMissingVars') -eq $true) { 
             Get-SqlCmdVars $dacProfile.DeployOptions.SqlCommandVariableValues -FailOnMissingVariables
         }
-        elseif ($PSBoundParameters.ContainsKey('FailOnMissingVars') -eq $false){
+        elseif ($PSBoundParameters.ContainsKey('FailOnMissingVars') -eq $false) {
             Get-SqlCmdVars $($dacProfile.DeployOptions.SqlCommandVariableValues)
         }
     }
@@ -101,6 +99,10 @@ Function Publish-DatabaseDeployment {
         if ($GenerateDeploymentReport -eq $true) {
             $result.DeploymentReport | Out-File $DeploymentReport
             Write-Host "Deployment Report - $DeploymentReport" -ForegroundColor DarkGreen -BackgroundColor White
+            $deprep = [xml] (Get-Content -Path $DeploymentReport)
+            $OperationSummary = Get-OperationSummary -deprep $deprep
+            $OperationTotal = Get-OperationTotal -deprep $deprep
+            
         }
         if ($GenerateDeploymentScript -eq $true) {
             Write-Host "Database change script - $DatabaseScriptPath" -ForegroundColor White -BackgroundColor DarkCyan
@@ -119,5 +121,9 @@ Function Publish-DatabaseDeployment {
             DeployOptions        = $deployOptions
             SqlCmdVariableValues = $dacProfile.DeployOptions.SqlCommandVariableValues.Keys
         } | Format-List
+
+        [pscustomobject]$OperationTotal
+
+        [pscustomobject]$OperationSummary | Format-List
     }
 }
