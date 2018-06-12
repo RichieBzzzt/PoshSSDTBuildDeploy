@@ -12,8 +12,6 @@ Function Publish-DatabaseDeployment {
         , [bool] $GenerateDeploymentReport 
         , $ScriptPath 
         , [Switch] $ScriptOnly
-
-
     )
     
     Write-Verbose 'Testing if DACfx was installed...'
@@ -37,7 +35,7 @@ Function Publish-DatabaseDeployment {
     $dacProfile = [Microsoft.SqlServer.Dac.DacProfile]::Load($publishXml)
     Write-Host ("Loaded publish profile '{0}'." -f $publishXml) -ForegroundColor White -BackgroundColor DarkMagenta
     if ($getSqlCmdVars) {
-       if ($PSBoundParameters.ContainsKey('FailOnMissingVars') -eq $true) { 
+        if ($PSBoundParameters.ContainsKey('FailOnMissingVars') -eq $true) { 
             Get-SqlCmdVars $dacProfile.DeployOptions.SqlCommandVariableValues -FailOnMissingVariables
         }
         else {
@@ -84,6 +82,10 @@ Function Publish-DatabaseDeployment {
         if ($GenerateDeploymentReport -eq $true) {
             $result.DeploymentReport | Out-File $DeploymentReport
             Write-Host "Deployment Report - $DeploymentReport" -ForegroundColor DarkGreen -BackgroundColor White
+            $deprep = [xml] (Get-Content -Path $DeploymentReport)
+            $OperationSummary = Get-OperationSummary -deprep $deprep
+            $OperationTotal = Get-OperationTotal -deprep $deprep
+            
         }
         if ($GenerateDeploymentScript -eq $true) {
             Write-Host "Database change script - $DatabaseScriptPath" -ForegroundColor White -BackgroundColor DarkCyan
@@ -102,5 +104,9 @@ Function Publish-DatabaseDeployment {
             DeployOptions        = $deployOptions
             SqlCmdVariableValues = $dacProfile.DeployOptions.SqlCommandVariableValues.Keys
         } | Format-List
+
+        [pscustomobject]$OperationTotal
+
+        [pscustomobject]$OperationSummary | Format-List
     }
 }

@@ -66,6 +66,8 @@
     'Install-VsBuildTools2017',
     "Get-LocalDb2016",
     "Get-LocalDb2016NuGet",
+    "Get-OperationSummary",
+    "Get-OperationTotal",    
     "Install-LocalDb2016",
     "Install-DotNet",
     "Install-NuGet"

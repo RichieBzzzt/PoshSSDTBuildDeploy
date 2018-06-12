@@ -17,7 +17,8 @@
 <file src="Functions\PublishDatabaseDeployment.ps1" target="Functions"/>
 <file src="Functions\TestNetInstalled.ps1" target="Functions"/>
 <file src="Functions\GetSqlCmdVars.ps1" target="Functions"/>
-<file src="Functions\TestDownloadUri.ps1" target="Functions"/>
+<file src="Functions\GetOperationSummary.ps1" target="Functions"/>
+<file src="Functions\GetOperationTotal.ps1" target="Functions"/>
 <file src="Functions\GetLocalDb2016.ps1" target="Functions"/>
 <file src="Functions\GetLocalDb2016NuGet.ps1" target="Functions"/>
 <file src="Functions\InstallLocalDb2016.ps1" target="Functions"/>
