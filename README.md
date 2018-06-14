@@ -3,7 +3,12 @@
 PowerShell Module designed to make use of [Microsoft.Data.Tools.MSBuild](https://www.nuget.org/packages/Microsoft.Data.Tools.Msbuild/).
 
 ## Build Status
+
+### CI Build
 [<img src="https://bzzztio.visualstudio.com/_apis/public/build/definitions/e986a19c-74f7-4d1f-8316-7f478f3d6646/5/badge"/>](https://bzzztio.visualstudio.com/PoshSSDTBuildDeploy/_apps/hub/ms.vss-ciworkflow.build-ci-hub?_a=edit-build-definition&id=5)
+
+### Publish Build
+[<img src="https://bzzztio.visualstudio.com/_apis/public/build/definitions/e986a19c-74f7-4d1f-8316-7f478f3d6646/20/badge"/>](https://bzzztio.visualstudio.com/PoshSSDTBuildDeploy/_apps/hub/ms.vss-ciworkflow.build-ci-hub?_a=edit-build-definition&id=20)
 
 ## Latest Releases
 [NuGet](https://www.nuget.org/packages/PoshSSDTBuildDeploy/)
@@ -116,4 +121,31 @@ Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml
 
 Use the ```-ScriptOnly``` Flag on Publish-DatabaseDeployment. For this to work either ```-GenerateDeployMentReport``` or ```-GenerateDeploymentScript``` must be set to ```$true``` as well as ```-ScriptPath```
 
+### Making Use Of GenerateDeployMentReport
 
+If hte GenerateDeployMentReport Switch is included, the Publish function will run ```Get-OperationSummary``` and ```Get-OperationTotal``` functions and output the changes to the console in the form of pscustomobjects. It is now easier to determine what changes are going to be made. IE in the case below we are creating and dropping a few objects - 
+``` powershell
+OperationName count
+------------- -----
+Drop          3
+Create        2
+
+
+
+OperationName Value                                              Type
+------------- -----                                              ----
+Drop          Permission                                         SqlPermissionStatement
+Drop          Permission                                         SqlPermissionStatement
+Drop          [dbo].[TestThree]                                  SqlTable
+Create        [dbo].[TestOne]                                    SqlTable
+Create        Primary Key: unnamed constraint on [dbo].[TestTwo] SqlPrimaryKeyConstraint
+```
+
+Warnings have also been added - 
+
+```powershell
+AlertName            Value                                                                Id
+---------            -----                                                                --
+CreateClusteredIndex Primary Key: unnamed constraint on [dbo].[TestTwo]
+DataIssue            The table [dbo].[TestThree] is being dropped, data loss could occur. 1
+```

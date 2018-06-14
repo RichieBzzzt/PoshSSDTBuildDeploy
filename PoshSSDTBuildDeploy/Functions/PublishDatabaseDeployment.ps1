@@ -85,6 +85,7 @@ Function Publish-DatabaseDeployment {
             $deprep = [xml] (Get-Content -Path $DeploymentReport)
             $OperationSummary = Get-OperationSummary -deprep $deprep
             $OperationTotal = Get-OperationTotal -deprep $deprep
+            $Alerts = Get-Alerts -deprep $deprep
             
         }
         if ($GenerateDeploymentScript -eq $true) {
@@ -108,5 +109,7 @@ Function Publish-DatabaseDeployment {
         [pscustomobject]$OperationTotal | Format-Table
 
         [pscustomobject]$OperationSummary | Format-Table
+
+        [pscustomobject]$Alerts | Format-Table
     }
 }
