@@ -105,8 +105,8 @@ Function Publish-DatabaseDeployment {
             SqlCmdVariableValues = $dacProfile.DeployOptions.SqlCommandVariableValues.Keys
         } | Format-List
 
-        [pscustomobject]$OperationTotal
+        [pscustomobject]$OperationTotal | Format-Table
 
-        [pscustomobject]$OperationSummary | Format-List
+        [pscustomobject]$OperationSummary | Format-Table
     }
 }
