@@ -144,8 +144,8 @@ Create        Primary Key: unnamed constraint on [dbo].[TestTwo] SqlPrimaryKeyCo
 Warnings have also been added - 
 
 ```powershell
-AlertName            Value                                                                Id
----------            -----                                                                --
+AlertName            Value                                                                
+---------            -----                                                                
 CreateClusteredIndex Primary Key: unnamed constraint on [dbo].[TestTwo]
-DataIssue            The table [dbo].[TestThree] is being dropped, data loss could occur. 1
+DataIssue            The table [dbo].[TestThree] is being dropped, data loss could occur. 
 ```
