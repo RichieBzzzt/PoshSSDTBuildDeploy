@@ -16,6 +16,7 @@
 <file src="Functions\InvokeMSBuildSSDT.ps1" target="Functions"/>
 <file src="Functions\PublishDatabaseDeployment.ps1" target="Functions"/>
 <file src="Functions\TestNetInstalled.ps1" target="Functions"/>
+<file src="Functions\GetAlerts.ps1" target="Functions"/>
 <file src="Functions\GetSqlCmdVars.ps1" target="Functions"/>
 <file src="Functions\GetOperationSummary.ps1" target="Functions"/>
 <file src="Functions\GetOperationTotal.ps1" target="Functions"/>

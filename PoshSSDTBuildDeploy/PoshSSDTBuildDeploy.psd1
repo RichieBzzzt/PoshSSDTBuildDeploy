@@ -64,6 +64,7 @@
     'Publish-DatabaseDeployment',
     'Test-NetInstalled',
     'Install-VsBuildTools2017',
+    "Get-Alerts",
     "Get-LocalDb2016",
     "Get-LocalDb2016NuGet",
     "Get-OperationSummary",
