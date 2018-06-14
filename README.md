@@ -140,3 +140,12 @@ Drop          [dbo].[TestThree]                                  SqlTable
 Create        [dbo].[TestOne]                                    SqlTable
 Create        Primary Key: unnamed constraint on [dbo].[TestTwo] SqlPrimaryKeyConstraint
 ```
+
+Warnings have also been added - 
+
+```powershell
+AlertName            Value                                                                Id
+---------            -----                                                                --
+CreateClusteredIndex Primary Key: unnamed constraint on [dbo].[TestTwo]
+DataIssue            The table [dbo].[TestThree] is being dropped, data loss could occur. 1
+```
