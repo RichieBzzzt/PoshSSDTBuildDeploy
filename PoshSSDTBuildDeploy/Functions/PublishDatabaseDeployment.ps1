@@ -91,8 +91,10 @@ Function Publish-DatabaseDeployment {
             $OperationSummary = Get-OperationSummary -deprep $deprep
             $OperationTotal = Get-OperationTotal -deprep $deprep
             $Alerts = Get-Alerts -deprep $deprep
-            $JoinTables = Join-Object -left $OperationSummary -Right $alerts -LeftJoinProperty IssueId -RightJoinProperty IssueId -Type AllInRight -RightProperties IssueValue
-            "Deployment for database $targetDatabaseName on $now" | Add-Content $DeploymentSummary
+            if ($null -ne $Alerts) {
+                $JoinTables = Join-Object -left $OperationSummary -Right $alerts -LeftJoinProperty IssueId -RightJoinProperty IssueId -Type AllInRight -RightProperties IssueValue
+            }
+            "Deployment for database $targetDatabaseName on $now `n" | Out-File $DeploymentSummary
             $OperationTotal | Out-String | Add-Content $DeploymentSummary
             $OperationSummary | Out-String | Add-Content $DeploymentSummary
             $Alerts | Out-String | Add-Content $DeploymentSummary
