@@ -123,29 +123,6 @@ Use the ```-ScriptOnly``` Flag on Publish-DatabaseDeployment. For this to work e
 
 ### Making Use Of GenerateDeployMentReport
 
-If hte GenerateDeployMentReport Switch is included, the Publish function will run ```Get-OperationSummary``` and ```Get-OperationTotal``` functions and output the changes to the console in the form of pscustomobjects. It is now easier to determine what changes are going to be made. IE in the case below we are creating and dropping a few objects - 
-``` powershell
-OperationName count
-------------- -----
-Drop          3
-Create        2
+If the GenerateDeployMentReport Switch is included, the Publish function will run ```Get-OperationSummary``` and ```Get-OperationTotal``` functions and output the changes to the console in the form of pscustomobjects. It is now easier to determine what changes are going to be made. IE in the case below we are creating and dropping a few objects - 
 
-
-
-OperationName Value                                              Type
-------------- -----                                              ----
-Drop          Permission                                         SqlPermissionStatement
-Drop          Permission                                         SqlPermissionStatement
-Drop          [dbo].[TestThree]                                  SqlTable
-Create        [dbo].[TestOne]                                    SqlTable
-Create        Primary Key: unnamed constraint on [dbo].[TestTwo] SqlPrimaryKeyConstraint
-```
-
-Warnings have also been added - 
-
-```powershell
-AlertName            Value                                                                
----------            -----                                                                
-CreateClusteredIndex Primary Key: unnamed constraint on [dbo].[TestTwo]
-DataIssue            The table [dbo].[TestThree] is being dropped, data loss could occur. 
-```
+![DeployReportinfoWithWarnings](img\\DeployReportAlertsAndSummariesJoined.PNG)
