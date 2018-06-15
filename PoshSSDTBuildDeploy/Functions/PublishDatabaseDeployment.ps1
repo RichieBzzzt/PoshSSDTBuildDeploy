@@ -47,6 +47,7 @@ Function Publish-DatabaseDeployment {
     $DatabaseScriptPath = Join-Path $ScriptPath "$($targetDatabaseName)_DeployScript_$timeStamp.sql"
     $MasterDbScriptPath = Join-Path $ScriptPath "($targetDatabaseName)_Master.DeployScript_$timeStamp.sql"
     $DeploymentReport = Join-Path $ScriptPath "$targetDatabaseName.Result.DeploymentReport_$timeStamp.xml"
+    $DeploymentSummary = Join-Path $ScriptPath "$targetDatabaseName.Result.DeploymentSummary_$timeStamp.txt"
 
     $dacServices = New-Object Microsoft.SqlServer.Dac.DacServices $targetConnectionString
     $options = @{
@@ -88,7 +89,11 @@ Function Publish-DatabaseDeployment {
             $OperationSummary = Get-OperationSummary -deprep $deprep
             $OperationTotal = Get-OperationTotal -deprep $deprep
             $Alerts = Get-Alerts -deprep $deprep
-            
+            $JoinTables = Join-Object -left $OperationSummary -Right $alerts -LeftJoinProperty IssueId -RightJoinProperty IssueId -Type AllInRight -RightProperties IssueValue
+            $OperationTotal | Out-String | Add-Content $DeploymentSummary
+            $OperationSummary | Out-String | Add-Content $DeploymentSummary
+            $Alerts | Out-String | Add-Content $DeploymentSummary
+            $JoinTables | Out-String | Where-Object {$null -ne $_.IssueId} | Add-Content $DeploymentSummary
         }
         if ($GenerateDeploymentScript -eq $true) {
             Write-Host "Database change script - $DatabaseScriptPath" -ForegroundColor White -BackgroundColor DarkCyan
@@ -104,18 +109,14 @@ Function Publish-DatabaseDeployment {
             DatabaseScriptPath   = $DatabaseScriptPath
             MasterDbScriptPath   = $($result.MasterDbScript)
             DeploymentReport     = $DeploymentReport
+            DeploymentSummary    = $DeploymentSummary
             DeployOptions        = $deployOptions
             SqlCmdVariableValues = $dacProfile.DeployOptions.SqlCommandVariableValues.Keys
         } | Format-List
 
         [pscustomobject]$OperationTotal | Format-Table
-
         [pscustomobject]$OperationSummary | Format-Table
-
         [pscustomobject]$Alerts | Format-Table
-
-        $JoinTables = Join-Object -left $OperationSummary -Right $alerts -LeftJoinProperty IssueId -RightJoinProperty IssueId -Type AllInRight -RightProperties IssueValue
-
         [pscustomobject]$JoinTables | Where-Object {$null -ne $_.IssueId}  | Format-Table
         
         if ($PSBoundParameters.ContainsKey('FailOnAlerts') -eq $true) { 
