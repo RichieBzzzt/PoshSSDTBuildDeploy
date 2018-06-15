@@ -12,6 +12,7 @@ Function Publish-DatabaseDeployment {
         , [bool] $GenerateDeploymentReport 
         , $ScriptPath 
         , [Switch] $ScriptOnly
+        , [Switch] $FailOnAlerts
     )
     
     Write-Verbose 'Testing if DACfx was installed...'
@@ -77,6 +78,7 @@ Function Publish-DatabaseDeployment {
     finally {
         Unregister-Event -SourceIdentifier "msg"
         if ($toThrow) {
+            $error[0]|format-list -force
             Throw $toThrow
         }
         if ($GenerateDeploymentReport -eq $true) {
@@ -115,5 +117,13 @@ Function Publish-DatabaseDeployment {
         $JoinTables = Join-Object -left $OperationSummary -Right $alerts -LeftJoinProperty IssueId -RightJoinProperty IssueId -Type AllInRight -RightProperties IssueValue
 
         [pscustomobject]$JoinTables | Where-Object {$null -ne $_.IssueId}  | Format-Table
+        
+        if ($PSBoundParameters.ContainsKey('FailOnAlerts') -eq $true) { 
+            if ($Alerts.Count -gt 0)
+            {
+                Write-Error "Alerts found, failing. Consult tables above."
+            }
+        }
+        
     }
 }
