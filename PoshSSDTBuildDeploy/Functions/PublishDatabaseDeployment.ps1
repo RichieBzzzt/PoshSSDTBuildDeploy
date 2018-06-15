@@ -111,5 +111,9 @@ Function Publish-DatabaseDeployment {
         [pscustomobject]$OperationSummary | Format-Table
 
         [pscustomobject]$Alerts | Format-Table
+
+        $JoinTables = Join-Object -left $OperationSummary -Right $alerts -LeftJoinProperty IssueId -RightJoinProperty IssueId -Type AllInRight -RightProperties IssueValue
+
+        [pscustomobject]$JoinTables | Where-Object {$null -ne $_.IssueId}  | Format-Table
     }
 }

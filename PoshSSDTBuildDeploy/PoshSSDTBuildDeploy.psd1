@@ -71,7 +71,8 @@
     "Get-OperationTotal",    
     "Install-LocalDb2016",
     "Install-DotNet",
-    "Install-NuGet"
+    "Install-NuGet",
+    "Join-Object"
     )
     # Cmdlets to export from this module
     CmdletsToExport = '*'
