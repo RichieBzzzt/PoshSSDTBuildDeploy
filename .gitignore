@@ -11,4 +11,8 @@ tests/wwi-dw-ssdt/WideWorldImporters_DeployScript*
 
 tests/wwi-dw-ssdt/WideWorldImporters.Result.DeploymentReport*
 
+tests/wwi-dw-ssdt/WideWorldImporters.Result.DeploymentSummary*
+
+tests/Publish-DatabaseDeployment.Tests.Richie.ps1
+
 tests/wwi-dw-ssdt/nuget.exe

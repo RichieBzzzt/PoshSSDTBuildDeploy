@@ -43,7 +43,8 @@ Function Publish-DatabaseDeployment {
             Get-SqlCmdVars $($dacProfile.DeployOptions.SqlCommandVariableValues)
         }
     }
-    $timeStamp = Get-Date -Format "yyMMdd_HHmmss_f"
+    $now = Get-Date 
+    $timeStamp = Get-Date $now -Format "yyMMdd_HHmmss_f"
     $DatabaseScriptPath = Join-Path $ScriptPath "$($targetDatabaseName)_DeployScript_$timeStamp.sql"
     $MasterDbScriptPath = Join-Path $ScriptPath "($targetDatabaseName)_Master.DeployScript_$timeStamp.sql"
     $DeploymentReport = Join-Path $ScriptPath "$targetDatabaseName.Result.DeploymentReport_$timeStamp.xml"
@@ -74,6 +75,7 @@ Function Publish-DatabaseDeployment {
         }
     }  
     catch [Microsoft.SqlServer.Dac.DacServicesException] {
+
         $toThrow = ("Deployment failed: '{0}' Reason: '{1}'" -f $_.Exception.Message, $_.Exception.InnerException.Message)
     }
     finally {
@@ -89,7 +91,10 @@ Function Publish-DatabaseDeployment {
             $OperationSummary = Get-OperationSummary -deprep $deprep
             $OperationTotal = Get-OperationTotal -deprep $deprep
             $Alerts = Get-Alerts -deprep $deprep
-            $JoinTables = Join-Object -left $OperationSummary -Right $alerts -LeftJoinProperty IssueId -RightJoinProperty IssueId -Type AllInRight -RightProperties IssueValue
+            if ($null -ne $Alerts) {
+                $JoinTables = Join-Object -left $OperationSummary -Right $alerts -LeftJoinProperty IssueId -RightJoinProperty IssueId -Type AllInRight -RightProperties IssueValue
+            }
+            "Deployment for database $targetDatabaseName on $now `n" | Out-File $DeploymentSummary
             $OperationTotal | Out-String | Add-Content $DeploymentSummary
             $OperationSummary | Out-String | Add-Content $DeploymentSummary
             $Alerts | Out-String | Add-Content $DeploymentSummary
@@ -120,11 +125,9 @@ Function Publish-DatabaseDeployment {
         [pscustomobject]$JoinTables | Where-Object {$null -ne $_.IssueId}  | Format-Table
         
         if ($PSBoundParameters.ContainsKey('FailOnAlerts') -eq $true) { 
-            if ($Alerts.Count -gt 0)
-            {
+            if ($Alerts.Count -gt 0) {
                 Write-Error "Alerts found, failing. Consult tables above."
             }
         }
-        
     }
 }
