@@ -74,15 +74,13 @@ Function Publish-DatabaseDeployment {
             Write-Host "Deployment successful!" -ForegroundColor DarkGreen
         }
     }  
-    catch [Microsoft.SqlServer.Dac.DacServicesException] {
-
-        $toThrow = ("Deployment failed: '{0}' Reason: '{1}'" -f $_.Exception.Message, $_.Exception.InnerException.Message)
+    catch {
+        $toThrow = ("Deployment failed: '{0}'" -f $_.Exception)
     }
     finally {
         Unregister-Event -SourceIdentifier "msg"
-        if ($toThrow) {
-            $error[0]|format-list -force
-            Throw $toThrow
+        if ($ToThrow) {
+            Throw $ToThrow
         }
         if ($GenerateDeploymentReport -eq $true) {
             $result.DeploymentReport | Out-File $DeploymentReport
