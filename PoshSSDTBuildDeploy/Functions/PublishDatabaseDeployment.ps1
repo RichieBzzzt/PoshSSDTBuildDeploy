@@ -75,7 +75,12 @@ Function Publish-DatabaseDeployment {
         }
     }  
     catch {
-        $toThrow = ("Deployment failed: '{0}'" -f $_.Exception)
+        $e = $_.Exception
+        $toThrow = $e.Message
+        while ($e.InnerException) {
+            $e = $e.InnerException
+            $toThrow += "`n" + $e.Message
+        }
     }
     finally {
         Unregister-Event -SourceIdentifier "msg"
