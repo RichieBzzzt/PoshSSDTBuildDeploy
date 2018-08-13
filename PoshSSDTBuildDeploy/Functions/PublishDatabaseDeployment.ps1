@@ -35,6 +35,18 @@ Function Publish-DatabaseDeployment {
     
     $dacProfile = [Microsoft.SqlServer.Dac.DacProfile]::Load($publishXml)
     Write-Host ("Loaded publish profile '{0}'." -f $publishXml) -ForegroundColor White -BackgroundColor DarkMagenta
+
+    
+
+    if ($PSBoundParameters.ContainsKey('targetConnectionString') -eq $false) {
+        $publishXmlName = Split-Path $publishXml -leaf
+        Write-Verbose "No TargetConnectionString specified, loading value from $publishXmlName" -Verbose
+        $TargetConnectionString = $dacProfile.TargetConnectionString 
+        $TargetConnectionStringLoadedFromPublishXml = $true
+    }
+    else{
+        $TargetConnectionStringLoadedFromPublishXml = $false
+    }
     if ($getSqlCmdVars) {
         if ($PSBoundParameters.ContainsKey('FailOnMissingVars') -eq $true) { 
             Get-SqlCmdVars $dacProfile.DeployOptions.SqlCommandVariableValues -FailOnMissingVariables
@@ -45,10 +57,12 @@ Function Publish-DatabaseDeployment {
     }
     $now = Get-Date 
     $timeStamp = Get-Date $now -Format "yyMMdd_HHmmss_f"
-    $DatabaseScriptPath = Join-Path $ScriptPath "$($targetDatabaseName)_DeployScript_$timeStamp.sql"
+    $DatabaseScriptPath = Join-Path $ScriptPath "$($targetDatabaseName).Result.DeployScript_$timeStamp.sql"
     $MasterDbScriptPath = Join-Path $ScriptPath "($targetDatabaseName)_Master.DeployScript_$timeStamp.sql"
     $DeploymentReport = Join-Path $ScriptPath "$targetDatabaseName.Result.DeploymentReport_$timeStamp.xml"
     $DeploymentSummary = Join-Path $ScriptPath "$targetDatabaseName.Result.DeploymentSummary_$timeStamp.txt"
+
+
 
     $dacServices = New-Object Microsoft.SqlServer.Dac.DacServices $targetConnectionString
     $options = @{
@@ -120,7 +134,8 @@ Function Publish-DatabaseDeployment {
             DeploymentSummary    = $DeploymentSummary
             DeployOptions        = $deployOptions
             SqlCmdVariableValues = $dacProfile.DeployOptions.SqlCommandVariableValues.Keys
-        } | Format-List
+            TargetConnectionStringLoadedFromPublishXml = $TargetConnectionStringLoadedFromPublishXml
+        }
 
         [pscustomobject]$OperationTotal | Format-Table
         [pscustomobject]$OperationSummary | Format-Table
