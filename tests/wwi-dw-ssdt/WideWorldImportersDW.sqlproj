@@ -164,5 +164,8 @@
     <None Include="WideWorldImportersDW.publish.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="WideWorldImportersDW_PesterTestLocalConnString.publish.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
