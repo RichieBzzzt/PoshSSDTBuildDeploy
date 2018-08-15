@@ -192,3 +192,7 @@ Use the ```-ScriptOnly``` Flag on Publish-DatabaseDeployment. For this to work e
 If the GenerateDeployMentReport Switch is included, the Publish function will run ```Get-OperationSummary``` and ```Get-OperationTotal``` functions and output the changes to the console in the form of pscustomobjects. It is now easier to determine what changes are going to be made. IE in the case below we are creating and dropping a few objects - 
 
 ![DeployReportinfoWithWarnings](img\\DeployReportAlertsAndSummariesJoined.PNG)
+
+### Gist of Generic Deploy Script
+
+[Gist Of Generic Script](https://gist.github.com/RichieBzzzt/de4be1a18de67b0240a3ba23916bdafb)
