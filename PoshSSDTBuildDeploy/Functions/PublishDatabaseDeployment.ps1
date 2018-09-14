@@ -21,6 +21,8 @@ Function Publish-DatabaseDeployment {
     if (-not (Test-Path $publishXml)) { throw "$publishXml not found!" }
     if (-not (Test-Path $ScriptPath)) { Throw "Script Path Invalid!" }
 
+    $ScriptPath = Resolve-Path $ScriptPath
+
     try {
         Write-Verbose 'DacFX found, attempting to load DAC assembly...'
         Add-Type -Path $dacfxPath
