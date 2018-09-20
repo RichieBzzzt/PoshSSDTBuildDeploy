@@ -25,8 +25,8 @@ Describe "Publish-DatabaseDeployment" {
         $DeploymentScriptPathPattern = Join-path $WWI "*DeployScript_*.sql"
         $DeploymentSummaryPathPattern = Join-path $WWI "*DeploymentSummary_*.txt"
     
-        Remove-Item $WWI_DACPAC -Force -ErrorAction SilentlyContinue
-        Invoke-MsBuildSSDT -DatabaseSolutionFilePath $WWI_SLN -DataToolsFilePath $WWI_DAC
+        #Remove-Item $WWI_DACPAC -Force -ErrorAction SilentlyContinue
+        #Invoke-MsBuildSSDT -DatabaseSolutionFilePath $WWI_SLN -DataToolsFilePath $WWI_DAC
     }
 
     BeforeEach {
@@ -114,11 +114,23 @@ Describe "Publish-DatabaseDeployment" {
     }  
     it "Deploy the database and DeploymentScript is not generated and DeploymentReport is not generated and DeployTag is updated to PesterTest" {
         {$DeployTag = "PesterTest"
-        Write-Host $DeployTag
+            Write-Host $DeployTag
             Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_NAME -GenerateDeploymentScript $false -GenerateDeploymentReport $false -ScriptPath $WWI -getSqlCmdVars -Verbose} | Should -Not -Throw
         Get-DbId -databaseName $WWI_NAME -serverInstanceName $serverInstance | Should -Not -BeNullOrEmpty
         $DeploymentScriptPathPattern | Should -Not -Exist
         $DeploymentReportPathPattern | Should -Not -Exist
         $DeploymentSummaryPathPattern | Should -Not -Exist
+    }
+
+    it "Connection String from publish.xml is used for publishing database." {
+        {
+            Remove-Variable svrConnstring
+            $WWI_PUB = Join-Path $WWI "\bin\Debug\WideWorldImportersDW_PesterTestLocalConnString.publish.xml"
+            $instanceName = "poshssdtbuilddeploy2"
+            sqllocaldb.exe create $instanceName 13.0 -s
+            sqllocaldb.exe info $instanceName
+            $serverInstance = "(localdb)\$instanceName"
+            Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetDatabaseName $WWI_NAME -ScriptPath $WWI -getSqlCmdVars -Verbose} | Should -Not -Throw
+        Get-DbId -databaseName $WWI_NAME -serverInstanceName "(localdb)\poshssdtbuilddeploy2" | Should -Not -BeNullOrEmpty
     }
 }
