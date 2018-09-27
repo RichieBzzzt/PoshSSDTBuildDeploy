@@ -5,17 +5,19 @@ function Install-MicrosoftDataToolsMSBuild {
     param ( 
         [parameter(Mandatory)]
         [string] $WorkingFolder, 
-        [string] $DataToolsMsBuildPackageVersion
+        [string] $DataToolsMsBuildPackageVersion,
+        [string] $NuGetPath
     )
 
     Write-Verbose "Verbose Folder  (with Verbose) : $WorkingFolder" 
     Write-Verbose "DataToolsVersion : $DataToolsMsBuildPackageVersion" 
     Write-Warning "If DataToolsVersion is blank latest will be used"
-    $NugetExe = "$WorkingFolder\nuget.exe"
-    if (-not (Test-Path $NugetExe)) {
-        Write-Host "Cannot find nuget at path $NugetPath\nuget.exe"
-        Write-Host "Downloading Latest copy of NuGet!"
-        Invoke-WebRequest -Uri "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe" -OutFile $NugetExe
+    if ($PSBoundParameters.ContainsKey('NuGetPath') -eq $false) {
+        $NuGetExe = Install-NuGet -WorkingFolder $WorkingFolder
+    }
+    else {
+        Write-Verbose "Skipping Nuget download..." -Verbose
+        $NuGetExe = Join-Path $NuGetPath "nuget.exe"
     }
     $TestDotNetVersion = Test-NetInstalled -DotNetVersion "4.6.1"
     Write-Host ".NET Version is $($TestDotNetVersion.DotNetVersion), DWORD Value is $($TestDotNetVersion.DWORD) and Required Version is $($TestDotNetVersion.RequiredVersion)" -ForegroundColor White -BackgroundColor DarkMagenta
