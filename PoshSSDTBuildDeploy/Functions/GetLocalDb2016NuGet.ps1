@@ -32,8 +32,7 @@ $targetMsi = Get-LocalDb2016NuGet -WorkingFolder $PsScriptRoot -NugetInstallUri 
         [Parameter(Mandatory = $false)]
         [string] $targetVersion
     )
-    $NugetInstallUri = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
-    $NuGetPath = Install-NuGet -WorkingFolder $WorkingFolder -NuGetInstallUri $NugetInstallUri
+    $NuGetPath = Install-NuGet -WorkingFolder $WorkingFolder
     $nugetInstallLocalDb = "&$NuGetPath install Microsoft.SQL.Server.2016.LocalDB -ExcludeVersion -OutputDirectory $WorkingFolder"
 
     if ($targetVersion) {
