@@ -49,3 +49,4 @@ function Install-MicrosoftDataToolsMSBuild {
         return $SSDTMSbuildFolderNet40
     }
 }
+
