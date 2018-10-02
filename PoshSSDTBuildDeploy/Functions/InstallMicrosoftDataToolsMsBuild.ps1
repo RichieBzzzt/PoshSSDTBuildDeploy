@@ -39,7 +39,7 @@ function Install-MicrosoftDataToolsMSBuild {
     if (-not (Test-Path $SSDTMSbuildFolderNet46)) {
         $SSDTMSbuildFolderNet40 = "$WorkingFolder\Microsoft.Data.Tools.Msbuild\lib\net40"
         if (-not (Test-Path $SSDTMSbuildFolderNet40)) {
-            Throw "It appears that the nuget install hasn't worked, check output above to see whats going on"
+            Throw "It appears that the nuget install hasn't worked, check output above to see whats going on."
         }
     }
     if (Test-Path $SSDTMSbuildFolderNet46) {
