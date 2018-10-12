@@ -70,8 +70,20 @@ $WWI_DAC = Join-Path $WWI "\Microsoft.Data.Tools.Msbuild\lib\net46"
 Install-MicrosoftDataToolsMSBuild -WorkingFolder $WWI
 Invoke-MsBuildSSDT -DatabaseSolutionFilePath $WWI_SLN -DataToolsFilePath $WWI_DAC 
 ```
-The above sample set the path to the directroy where the sqlproj file is, and also used this as the working directory to download the NuGet package. This means the dlls etc were local to the project. 
+The above sample set the path to the directory where the sqlproj file is, and also used this as the working directory to download the NuGet package. This means the dlls etc were local to the project.
 
+### How Do I Catch Errors From The Build?
+Use ```$lastexitcode``` when invoking the function ```Invoke-MSBuildSSDT```. This will tell you if the build is successful or not.
+```powershell
+$WWI = Join-Path $PSScriptRoot "wwi-dw-ssdt"
+$WWI_SLN = Join-Path $WWI "\WideWorldImportersDW.sqlproj"
+$WWI_DAC = Join-Path $WWI "\Microsoft.Data.Tools.Msbuild\lib\net46"
+Install-MicrosoftDataToolsMSBuild -WorkingFolder $WWI
+Invoke-MsBuildSSDT -DatabaseSolutionFilePath $WWI_SLN -DataToolsFilePath $WWI_DAC 
+if ($lastexitcode -ne 0){
+  throw
+}
+```
 ### How To Publish DACPAC
 Use [Publish-DatabaseDeployment](https://github.com/RichieBzzzt/PoshSSDTBuildDeploy/blob/master/PoshSSDTBuildDeploy/Functions/PublishDatabaseDeployment.ps1), passsing in the location to the dac dll, the location of the dac dll, the publish file and the dacpac.
 
