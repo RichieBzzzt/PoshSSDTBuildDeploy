@@ -22,4 +22,4 @@ catch {
     Install-Module Pester -MinimumVersion 4.3.1 -Force -Scope CurrentUser
 }
 
-Invoke-Pester .\*.Tests.ps1
+Invoke-Pester .\**\*.Tests.ps1 

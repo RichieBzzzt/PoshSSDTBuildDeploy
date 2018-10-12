@@ -6,14 +6,12 @@ Function Install-NuGet {
     Checks that NuGet is installed in given folder location. If it isn't it is downloaded from the web.
     .PARAMETER WorkingFolder
     Location that Nuget.exe is/isn't.
-    .PARAMETER  NugetInstalluri
-    The url used to download Nuget. 
     .INPUTS
     N/A
     .OUTPUTS
     NugetExe: the path to Nuget, irrespective of whether it was downloaded or already existed.
     .EXAMPLE
-    $NuGetPath = Install-NuGet -WorkingFolder $PsScriptRoot -NuGetInstallUri "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
+    $NuGetPath = Install-NuGet -WorkingFolder $PsScriptRoot
     .NOTES
       N/A
     #>
@@ -21,10 +19,9 @@ Function Install-NuGet {
         param
         (
             [Parameter(Mandatory = $true)]
-            [string] $WorkingFolder,
-            [Parameter(Mandatory = $true)]
-            [string] $NuGetInstallUri
+            [string] $WorkingFolder
         )
+        $NuGetInstallUri = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
         Write-Verbose "Working Folder   : $WorkingFolder" -Verbose
         $NugetExe = "$WorkingFolder\nuget.exe"
         if (-not (Test-Path $NugetExe)) {
