@@ -39,5 +39,6 @@ function Invoke-MsBuildSSDT {
     $arg4 = "/p:Configuration=Debug"
 
     Write-Host $msbuild $DatabaseSolutionFilePath $arg1 $arg2 $arg3 $arg4 -ForegroundColor White -BackgroundColor DarkGreen
-    & $msbuild $DatabaseSolutionFilePath $arg1 $arg2 $arg3 $arg4
+
+    & $msbuild $DatabaseSolutionFilePath $arg1 $arg2 $arg3 $arg4 2>&1
 }
