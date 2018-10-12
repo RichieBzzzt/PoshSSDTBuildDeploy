@@ -19,6 +19,18 @@ Describe "Invoke-MsBuildSSDT" {
         $WWI_DACPAC | Should -Not -Exist
     }
 
+    It "should not build the database and produce a dacpac" {
+        Remove-Item $WWI_DACPAC -Force -ErrorAction SilentlyContinue
+        $WWI_DACPAC | Should -Not -Exist
+        {
+            Invoke-MsBuildSSDT -DatabaseSolutionFilePath $PSScriptRoot -DataToolsFilePath $WWI_DAC
+            if ($LASTEXITCODE -ne 0){
+                Throw
+            }
+        } | Should -Throw
+        $WWI_DACPAC | Should -Not -Exist
+    }
+
     It "should build the database and produce a dacpac" {
         Remove-Item $WWI_DACPAC -Force -ErrorAction SilentlyContinue
         $WWI_DACPAC | Should -Not -Exist
