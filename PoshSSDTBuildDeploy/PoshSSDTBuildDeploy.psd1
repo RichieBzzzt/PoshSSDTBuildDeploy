@@ -52,7 +52,9 @@
     RequiredModules = @()
  
     # Script files (.psm1) that are run in the caller's environment prior to importing this module
-    ScriptsToProcess = @()
+    ScriptsToProcess = @(
+        'Scripts\ImportLogo.ps1'
+    )
  
     # Format files (.psm1xml) to be loaded when importing this module
     FormatsToProcess = @()
