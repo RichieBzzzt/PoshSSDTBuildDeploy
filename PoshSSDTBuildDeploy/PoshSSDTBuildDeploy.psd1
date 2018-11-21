@@ -62,6 +62,7 @@
     # Functions to export from this module
     FunctionsToExport = @(
     'Install-MicrosoftDataToolsMSBuild',
+    'Install-MicrosoftSqlServerDacFxx64',
     'Invoke-MsBuildSSDT',
     'Publish-DatabaseDeployment',
     'Test-NetInstalled',
