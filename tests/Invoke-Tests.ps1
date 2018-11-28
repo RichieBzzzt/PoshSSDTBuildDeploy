@@ -21,5 +21,5 @@ try{
 catch {
     Install-Module Pester -MinimumVersion 4.3.1 -Force -Scope CurrentUser
 }
-
+$ErrorActionPreference = "Stop"
 Invoke-Pester .\**\*.Tests.ps1 

@@ -18,13 +18,16 @@ function Install-MicrosoftSqlServerDacFxx64 {
     else {
         Write-Verbose "Skipping Nuget download..." -Verbose
         $NuGetExe = Join-Path $NuGetPath "nuget.exe"
+        if (-not (Test-Path $NuGetExe)) {
+            Throw "NuGetpath specified, but nuget exe does not exist!"
+        }
     }
     $TestDotNetVersion = Test-NetInstalled -DotNetVersion "4.6.1"
     Write-Host ".NET Version is $($TestDotNetVersion.DotNetVersion), DWORD Value is $($TestDotNetVersion.DWORD) and Required Version is $($TestDotNetVersion.RequiredVersion)" -ForegroundColor White -BackgroundColor DarkMagenta
     if ($TestDotNetVersion.DWORD -le 394254) {
         Throw "Need to install .NET 4.6.1 at least!"
     }
-    $nugetArgs = @("install","Microsoft.Data.Tools.Msbuild","-ExcludeVersion","-OutputDirectory",$WorkingFolder)
+    $nugetArgs = @("install","Microsoft.SqlServer.DacFx.x64","-ExcludeVersion","-OutputDirectory",$WorkingFolder)
     if ($DacFxx64Version) {
         if ($DacFxx64Version -lt "130.3485.1") {
             Throw "Lower versions than 130.3485.1 will NOT work with Publish-DatabaseDeployment. For more information, read the post https://blogs.msdn.microsoft.com/ssdt/2016/10/20/sql-server-data-tools-16-5-release/"            

@@ -18,6 +18,9 @@ function Install-MicrosoftDataToolsMSBuild {
     else {
         Write-Verbose "Skipping Nuget download..." -Verbose
         $NuGetExe = Join-Path $NuGetPath "nuget.exe"
+        if (-not (Test-Path $NuGetExe)) {
+            Throw "NuGetpath specified, but nuget exe does not exist!"
+        }
     }
     $TestDotNetVersion = Test-NetInstalled -DotNetVersion "4.6.1"
     Write-Host ".NET Version is $($TestDotNetVersion.DotNetVersion), DWORD Value is $($TestDotNetVersion.DWORD) and Required Version is $($TestDotNetVersion.RequiredVersion)" -ForegroundColor White -BackgroundColor DarkMagenta
