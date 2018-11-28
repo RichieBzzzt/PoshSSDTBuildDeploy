@@ -9,8 +9,8 @@ function Install-MicrosoftDataToolsMSBuild {
         [string] $NuGetPath
     )
 
-    Write-Verbose "Verbose Folder  (with Verbose) : $WorkingFolder" 
-    Write-Verbose "DataToolsVersion : $DataToolsMsBuildPackageVersion" 
+    Write-Verbose "Verbose Folder : $WorkingFolder" -Verbose
+    Write-Verbose "DataToolsVersion : $DataToolsMsBuildPackageVersion" -Verbose 
     Write-Warning "If DataToolsVersion is blank latest will be used"
     if ($PSBoundParameters.ContainsKey('NuGetPath') -eq $false) {
         $NuGetExe = Install-NuGet -WorkingFolder $WorkingFolder
@@ -24,17 +24,15 @@ function Install-MicrosoftDataToolsMSBuild {
     if ($TestDotNetVersion.DWORD -le 394254) {
         Throw "Need to install .NET 4.6.1 at least!"
     }
-    #putting the $NugetExe and $WorkingFolder in double-quotes in case there are spaces in the paths.
-    $nugetInstallMsbuild = "&`"$NugetExe`" install Microsoft.Data.Tools.Msbuild -ExcludeVersion -OutputDirectory `"$WorkingFolder`""
+    $nugetArgs = @("install","Microsoft.Data.Tools.Msbuild","-ExcludeVersion","-OutputDirectory",$WorkingFolder)
     if ($DataToolsMsBuildPackageVersion) {
         if ($DataToolsMsBuildPackageVersion -lt "10.0.61026") {
             Throw "Lower versions than 10.0.61026 will NOT work with Publish-DatabaseDeployment. For more information, read the post https://blogs.msdn.microsoft.com/ssdt/2016/10/20/sql-server-data-tools-16-5-release/"            
         }
-        $nugetInstallMsbuild += " -version '$DataToolsMsBuildPackageVersion'"
+        $nugetArgs += "-version",$DataToolsMsBuildPackageVersion
     }
-    Write-Host $nugetInstallMsbuild -BackgroundColor White -ForegroundColor DarkGreen
-    $execNuget = Invoke-Expression $nugetInstallMsbuild 2>&1 
-    Write-Host $execNuget
+    Write-Host $nugetExe ($nugetArgs -join " ") -BackgroundColor White -ForegroundColor DarkGreen
+    &$nugetExe $nugetArgs  2>&1
     $SSDTMSbuildFolderNet46 = "$WorkingFolder\Microsoft.Data.Tools.Msbuild\lib\net46"
     if (-not (Test-Path $SSDTMSbuildFolderNet46)) {
         $SSDTMSbuildFolderNet40 = "$WorkingFolder\Microsoft.Data.Tools.Msbuild\lib\net40"

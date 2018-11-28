@@ -9,8 +9,8 @@ function Install-MicrosoftSqlServerDacFxx64 {
         [string] $NuGetPath
     )
 
-    Write-Verbose "Verbose Folder  (with Verbose) : $WorkingFolder" 
-    Write-Verbose "DataToolsVersion : $DacFxx64Version" 
+    Write-Verbose "Verbose Folder : $WorkingFolder" -Verbose
+    Write-Verbose "DataToolsVersion : $DacFxx64Version" -Verbose
     Write-Warning "If DacFxx64Version is blank latest will be used"
     if ($PSBoundParameters.ContainsKey('NuGetPath') -eq $false) {
         $NuGetExe = Install-NuGet -WorkingFolder $WorkingFolder
@@ -24,17 +24,15 @@ function Install-MicrosoftSqlServerDacFxx64 {
     if ($TestDotNetVersion.DWORD -le 394254) {
         Throw "Need to install .NET 4.6.1 at least!"
     }
-    #putting the $NugetExe and $WorkingFolder in double-quotes in case there are spaces in the paths.
-    $nugetInstallDacFx = "&`"$NugetExe`" install Microsoft.SqlServer.DacFx.x64 -ExcludeVersion -OutputDirectory `"$WorkingFolder`""
+    $nugetArgs = @("install","Microsoft.Data.Tools.Msbuild","-ExcludeVersion","-OutputDirectory",$WorkingFolder)
     if ($DacFxx64Version) {
         if ($DacFxx64Version -lt "130.3485.1") {
             Throw "Lower versions than 130.3485.1 will NOT work with Publish-DatabaseDeployment. For more information, read the post https://blogs.msdn.microsoft.com/ssdt/2016/10/20/sql-server-data-tools-16-5-release/"            
         }
-        $nugetInstallDacFx += " -version '$DacFxx64Version'"
+        $nugetArgs += "-version",$DacFxx64Version
     }
-    Write-Host $nugetInstallDacFx -BackgroundColor White -ForegroundColor DarkGreen
-    $execNuget = Invoke-Expression $nugetInstallDacFx 2>&1 
-    Write-Host $execNuget
+    Write-Host $nugetExe ($nugetArgs -join " ") -BackgroundColor White -ForegroundColor DarkGreen
+    &$nugetExe $nugetArgs  2>&1
     $dacFxFolderNet46 = "$WorkingFolder\Microsoft.SqlServer.DacFx.x64\lib\net46"
     if (-not (Test-Path $dacFxFolderNet46)) {
         $dacFxFolderNet40 = "$WorkingFolder\Microsoft.SqlServer.DacFx.x64\lib\net40"
@@ -49,4 +47,3 @@ function Install-MicrosoftSqlServerDacFxx64 {
         return $dacFxFolderNet40
     }
 }
-
