@@ -35,7 +35,7 @@ function Install-MicrosoftSqlServerDacFxx64 {
         $nugetArgs += "-version",$DacFxx64Version
     }
     Write-Host $nugetExe ($nugetArgs -join " ") -BackgroundColor White -ForegroundColor DarkGreen
-    &$nugetExe $nugetArgs  2>&1
+    &$nugetExe $nugetArgs  2>&1 | Out-Host
     $dacFxFolderNet46 = "$WorkingFolder\Microsoft.SqlServer.DacFx.x64\lib\net46"
     if (-not (Test-Path $dacFxFolderNet46)) {
         $dacFxFolderNet40 = "$WorkingFolder\Microsoft.SqlServer.DacFx.x64\lib\net40"

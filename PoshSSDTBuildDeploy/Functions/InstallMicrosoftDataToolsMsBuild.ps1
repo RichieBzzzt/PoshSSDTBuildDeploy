@@ -35,7 +35,7 @@ function Install-MicrosoftDataToolsMSBuild {
         $nugetArgs += "-version",$DataToolsMsBuildPackageVersion
     }
     Write-Host $nugetExe ($nugetArgs -join " ") -BackgroundColor White -ForegroundColor DarkGreen
-    &$nugetExe $nugetArgs  2>&1
+    &$nugetExe $nugetArgs  2>&1  Out-Host
     $SSDTMSbuildFolderNet46 = "$WorkingFolder\Microsoft.Data.Tools.Msbuild\lib\net46"
     if (-not (Test-Path $SSDTMSbuildFolderNet46)) {
         $SSDTMSbuildFolderNet40 = "$WorkingFolder\Microsoft.Data.Tools.Msbuild\lib\net40"
