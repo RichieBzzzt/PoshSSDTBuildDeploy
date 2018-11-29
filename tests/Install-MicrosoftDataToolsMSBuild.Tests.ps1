@@ -12,6 +12,12 @@ Describe "Install-MicrosoftDataToolsMSBuild" {
         Install-NuGet -WorkingFolder $PSScriptRoot 
         {Install-MicrosoftDataToolsMSBuild -WorkingFolder $WWI -DataToolsMsBuildPackageVersion "10.0.61026" -NugetPath $PSScriptRoot} | Should -Not -Throw
     }
+    It "skip install of nuget" {
+        Install-NuGet -WorkingFolder $PSScriptRoot 
+        {Install-MicrosoftDataToolsMSBuild -WorkingFolder $WWI -DataToolsMsBuildPackageVersion "10.0.61026" -NugetPath $PSScriptRoot} | Should -Not -Throw
+        $expected = Join-Path $wwi "Microsoft.Data.Tools.Msbuild\lib\net46"
+        $expected | Should -Exist
+    }
     It "Will throw if nuget does not exist in specified path" {
         $spaces = Join-Path $PSScriptRoot "s p a c e s"
         {Install-MicrosoftDataToolsMSBuild -WorkingFolder $WWI -DataToolsMsBuildPackageVersion "10.0.61026" -NugetPath $($spaces) } | Should -Throw

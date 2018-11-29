@@ -11,6 +11,8 @@ Describe "Install-MicrosoftSqlServerDacFxx64" {
     It "skip install of nuget" {
         Install-NuGet -WorkingFolder $PSScriptRoot 
         {Install-MicrosoftSqlServerDacFxx64 -WorkingFolder $WWI -DacFxx64Version "150.4200.1" -NugetPath $PSScriptRoot} | Should -Not -Throw
+        $expected = Join-Path $wwi "Microsoft.SqlServer.DacFx.x64\lib\net46"
+        $expected | Should -Exist
     }
     It "Will throw if nuget does not exist in specified path" {
         $spaces = Join-Path $PSScriptRoot "s p a c e s"
