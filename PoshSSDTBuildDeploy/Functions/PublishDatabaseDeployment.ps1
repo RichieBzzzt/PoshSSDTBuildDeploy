@@ -10,10 +10,15 @@ Function Publish-DatabaseDeployment {
         , [Switch] $FailOnMissingVars
         , [bool] $GenerateDeploymentScript
         , [bool] $GenerateDeploymentReport 
+        , [bool] $GenerateDeploymentSummary
         , $ScriptPath 
         , [Switch] $ScriptOnly
         , [Switch] $FailOnAlerts
     )
+
+    if (($GenerateDeploymentReport -eq $false) -and ($GenerateDeploymentSummary -eq $true)) {
+        throw "To include the summary report (`$GenerateDeploymentSummary) you need to include `$GenerateDeploymentReport"
+    }
     
     Write-Verbose 'Testing if DACfx was installed...'
     if (-not (Test-Path $dacfxPath)) { throw "No usable version of Dac Fx found at $dacfxPath" }
@@ -38,15 +43,13 @@ Function Publish-DatabaseDeployment {
     $dacProfile = [Microsoft.SqlServer.Dac.DacProfile]::Load($publishXml)
     Write-Host ("Loaded publish profile '{0}'." -f $publishXml) -ForegroundColor White -BackgroundColor DarkMagenta
 
-    
-
     if ($PSBoundParameters.ContainsKey('targetConnectionString') -eq $false) {
         $publishXmlName = Split-Path $publishXml -leaf
         Write-Verbose "No TargetConnectionString specified, loading value from $publishXmlName" -Verbose
         $TargetConnectionString = $dacProfile.TargetConnectionString 
         $TargetConnectionStringLoadedFromPublishXml = $true
     }
-    else{
+    else {
         $TargetConnectionStringLoadedFromPublishXml = $false
     }
     if ($getSqlCmdVars) {
@@ -63,8 +66,6 @@ Function Publish-DatabaseDeployment {
     $MasterDbScriptPath = Join-Path $ScriptPath "($targetDatabaseName)_Master.DeployScript_$timeStamp.sql"
     $DeploymentReport = Join-Path $ScriptPath "$targetDatabaseName.Result.DeploymentReport_$timeStamp.xml"
     $DeploymentSummary = Join-Path $ScriptPath "$targetDatabaseName.Result.DeploymentSummary_$timeStamp.txt"
-
-
 
     $dacServices = New-Object Microsoft.SqlServer.Dac.DacServices $targetConnectionString
     $options = @{
@@ -107,46 +108,48 @@ Function Publish-DatabaseDeployment {
             $result.DeploymentReport | Out-File $DeploymentReport
             Write-Host "Deployment Report - $DeploymentReport" -ForegroundColor DarkGreen -BackgroundColor White
             $deprep = [xml] (Get-Content -Path $DeploymentReport)
-            $OperationSummary = Get-OperationSummary -deprep $deprep
-            $OperationTotal = Get-OperationTotal -deprep $deprep
-            $Alerts = Get-Alerts -deprep $deprep
-            if ($null -ne $Alerts) {
-                $JoinTables = Join-Object -left $OperationSummary -Right $alerts -LeftJoinProperty IssueId -RightJoinProperty IssueId -Type AllInRight -RightProperties IssueValue
+            if ($GenerateDeploymentSummary -eq $true) {
+                $OperationSummary = Get-OperationSummary -deprep $deprep
+                $OperationTotal = Get-OperationTotal -deprep $deprep
+                $Alerts = Get-Alerts -deprep $deprep
+                if ($null -ne $Alerts) {
+                    $JoinTables = Join-Object -left $OperationSummary -Right $alerts -LeftJoinProperty IssueId -RightJoinProperty IssueId -Type AllInRight -RightProperties IssueValue
+                }
+                "Deployment for database $targetDatabaseName on $now `n" | Out-File $DeploymentSummary
+                $OperationTotal | Out-String | Add-Content $DeploymentSummary
+                $OperationSummary | Out-String | Add-Content $DeploymentSummary
+                $Alerts | Out-String | Add-Content $DeploymentSummary
+                $JoinTables | Out-String | Where-Object {$null -ne $_.IssueId} | Add-Content $DeploymentSummary
             }
-            "Deployment for database $targetDatabaseName on $now `n" | Out-File $DeploymentSummary
-            $OperationTotal | Out-String | Add-Content $DeploymentSummary
-            $OperationSummary | Out-String | Add-Content $DeploymentSummary
-            $Alerts | Out-String | Add-Content $DeploymentSummary
-            $JoinTables | Out-String | Where-Object {$null -ne $_.IssueId} | Add-Content $DeploymentSummary
         }
         if ($GenerateDeploymentScript -eq $true) {
             Write-Host "Database change script - $DatabaseScriptPath" -ForegroundColor White -BackgroundColor DarkCyan
             if ((Test-Path $MasterDbScriptPath) -eq $true) {
                 Write-Host "Master database change script - $($result.MasterDbScript)" -ForegroundColor White -BackgroundColor DarkGreen
             }
-        }
-    
+        }    
         $deployOptions = $dacProfile.DeployOptions | Select-Object -Property * -ExcludeProperty "SqlCommandVariableValues"
         [pscustomobject]@{
-            Dacpac               = $dacpac
-            PublishXml           = $PublishXml
-            DatabaseScriptPath   = $DatabaseScriptPath
-            MasterDbScriptPath   = $($result.MasterDbScript)
-            DeploymentReport     = $DeploymentReport
-            DeploymentSummary    = $DeploymentSummary
-            DeployOptions        = $deployOptions
-            SqlCmdVariableValues = $dacProfile.DeployOptions.SqlCommandVariableValues.Keys
+            Dacpac                                     = $dacpac
+            PublishXml                                 = $PublishXml
+            DatabaseScriptPath                         = $DatabaseScriptPath
+            MasterDbScriptPath                         = $($result.MasterDbScript)
+            DeploymentReport                           = $DeploymentReport
+            DeploymentSummary                          = $DeploymentSummary
+            DeployOptions                              = $deployOptions
+            SqlCmdVariableValues                       = $dacProfile.DeployOptions.SqlCommandVariableValues.Keys
             TargetConnectionStringLoadedFromPublishXml = $TargetConnectionStringLoadedFromPublishXml
         }
-
-        [pscustomobject]$OperationTotal | Format-Table
-        [pscustomobject]$OperationSummary | Format-Table
-        [pscustomobject]$Alerts | Format-Table
-        [pscustomobject]$JoinTables | Where-Object {$null -ne $_.IssueId}  | Format-Table
+        if ($GenerateDeplymentSummary -eq $true) {
+            [pscustomobject]$OperationTotal | Format-Table
+            [pscustomobject]$OperationSummary | Format-Table
+            [pscustomobject]$Alerts | Format-Table
+            [pscustomobject]$JoinTables | Where-Object {$null -ne $_.IssueId}  | Format-Table
         
-        if ($PSBoundParameters.ContainsKey('FailOnAlerts') -eq $true) { 
-            if ($Alerts.Count -gt 0) {
-                Write-Error "Alerts found, failing. Consult tables above."
+            if ($PSBoundParameters.ContainsKey('FailOnAlerts') -eq $true) { 
+                if ($Alerts.Count -gt 0) {
+                    Write-Error "Alerts found, failing. Consult tables above."
+                }
             }
         }
     }
