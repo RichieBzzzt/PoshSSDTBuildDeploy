@@ -1,6 +1,35 @@
 
 
 function Install-MicrosoftSqlServerDacFxx64 {
+         <#
+.SYNOPSIS
+Install Microsoft.SqlServer.DacFx.x64 from NuGet
+.DESCRIPTION
+Installs Microsoft.SqlServer.DacFx.x64 into a folder path, optionally using NuGet that is already preinstalled.
+.PARAMETER WorkingFolder
+Mandatory - Location of where NuGet package is to be installed.
+.PARAMETER  DataToolsMsBuildPackageVersion
+OPtional - The version we want to install. 
+.PARAMETER  NuGetPath
+Optional - Can use NuGet already installed or leave blank to downloadNuGet from the internet.   
+.INPUTS
+N/A
+.OUTPUTS
+ Directory of Nuget package.
+.EXAMPLE
+Example 1) Download latest NuGet package to PSScriptRoot
+$workingFolder = $PSScriptRoot
+New-Item -ItemType Directory -Force -Path $WorkingFolder
+$dacX64 = Join-Path $WorkingFolder "\Microsoft.SqlServer.DacFx.x64\lib\net46"
+if ((Test-Path $dacX64) -eq $false) {
+    Install-MicrosoftDataToolsMSBuild -WorkingFolder $workingFolder
+}
+if ((Test-Path $dacX64) -eq $false) {
+    Write-Output "Oh! It looks like dacX64 did not download."
+}
+.NOTES
+  N/A
+#>
     [cmdletbinding()]
     param ( 
         [parameter(Mandatory)]

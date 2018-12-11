@@ -44,7 +44,7 @@ Tests Passed: 12, Failed: 0, Skipped: 0, Pending: 0, Inconclusive: 0
 
 Consult the `/tests/*.Tests.ps1` files in the repo for samples of how to use this module to build and deploy.
 
-Each Function should have it's own helping headers... eventually. Currently only the ones that pertain to LocalDB install do.
+Each Function should have it's own helping headers... eventually.
 
 The basic process is
 
@@ -98,7 +98,7 @@ if ($lastexitcode -ne 0){
 
 ### How To Publish DACPAC
 
-Use [Publish-DatabaseDeployment](https://github.com/RichieBzzzt/PoshSSDTBuildDeploy/blob/master/PoshSSDTBuildDeploy/Functions/PublishDatabaseDeployment.ps1), passsing in the location to the dac dll, the location of the dac dll, the publish file and the dacpac.
+Use [Publish-DatabaseDeployment](https://github.com/RichieBzzzt/PoshSSDTBuildDeploy/blob/master/PoshSSDTBuildDeploy/Functions/PublishDatabaseDeployment.ps1), passing in the location to the dac dll, the location of the dac dll, the publish file and the dacpac.
 
 As of version 2, there are four new options on the function -
 
@@ -133,6 +133,24 @@ Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml
 
 Above example again sets the location of the source folder and creates the relative paths.
 
+### I need to Deploy with the Latest Version of DacFX... How Do I Do This?
+
+Install the latest version of DacFx by using ```Install-MicrosoftSqlServerDacFxx64```; currently this Nuget package is updated more regularly than the MSBuild one mentione above. For example., as of December 2018, you will need the DacFx NuGet package to deploy to a Managed Instance. This function is practically identical to the MSBuild one mentioned above.
+
+```powershell
+
+Example 1) Download latest NuGet package to PSScriptRoot
+$workingFolder = $PSScriptRoot
+New-Item -ItemType Directory -Force -Path $WorkingFolder
+$dacX64 = Join-Path $WorkingFolder "\Microsoft.SqlServer.DacFx.x64\lib\net46"
+if ((Test-Path $dacX64) -eq $false) {
+    Install-MicrosoftDataToolsMSBuild -WorkingFolder $workingFolder
+}
+if ((Test-Path $dacX64) -eq $false) {
+    Write-Output "Oh! It looks like dacX64 did not download."
+}
+```
+
 ### How To Update SQLCMDVars in a Publish.XML File
 If you have SqlCmdVariables that need updating, you can do this by including the 'getSqlCmdVars' switch when executing the [Publish-DatabaseDeployment](https://github.com/RichieBzzzt/PoshSSDTBuildDeploy/blob/master/PoshSSDTBuildDeploy/Functions/PublishDatabaseDeployment.ps1) Function. 
 By adding this swtich the function [Get-SqlCmdVars](https://github.com/RichieBzzzt/PoshSSDTBuildDeploy/blob/master/PoshSSDTBuildDeploy/Functions/GetSqlCmdVars.ps1) is executed. This will attempt to resolve SQLCmd variables via matching powershell variables explicitly defined in the current context.
@@ -162,7 +180,7 @@ param (
 
 )
 
-Set-Variable -Name "daubbipassword" -Value $deploytag -Scope Global
+Set-Variable -Name "deploytag" -Value $deploytag -Scope Global
 
 if ($PSBoundParameters.ContainsKey('connectionString') -eq $false) {
 [string] $connectionString = "Server=tcp:$($serverName),1433;Initial Catalog=$($DatabaseName);Persist Security Info=False;User ID=$($sqlAdministratorLogin);Password=$($sqlAdministratorLoginPassword);MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
@@ -210,11 +228,13 @@ if ($PSBoundParameters.ContainsKey('getSqlCmdVars') -eq $true) {
 
 Use the ```-ScriptOnly``` Flag on Publish-DatabaseDeployment. For this to work either ```-GenerateDeployMentReport``` or ```-GenerateDeploymentScript``` must be set to ```$true``` as well as ```-ScriptPath```
 
-### Making Use Of GenerateDeployMentReport
+### Making Use Of GenerateDeploymentReport
 
-If the GenerateDeployMentReport Switch is included, the Publish function will run ```Get-OperationSummary``` and ```Get-OperationTotal``` functions and output the changes to the console in the form of pscustomobjects. It is now easier to determine what changes are going to be made. IE in the case below we are creating and dropping a few objects - 
+If the GenerateDeployMentReport Switch is included, you can make use of this report to get a better understanding as to what was deployed. By using the ```GenerateDeploymentSummary``` flag, the Publish function will run ```Get-OperationSummary``` and ```Get-OperationTotal``` functions and output the changes to the console in the form of pscustomobjects. It is now easier to determine what changes are going to be made. IE in the case below we are creating and dropping a few objects - 
 
 ![DeployReportinfoWithWarnings](img\\DeployReportAlertsAndSummariesJoined.PNG)
+
+I have expereinced errors in running these functions on databases with very large number a of changes. Note that if this step fails yet all schema changes were the deploymentto the database should still considered to be successful.
 
 ### Gist of Generic Deploy Script
 

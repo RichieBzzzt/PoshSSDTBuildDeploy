@@ -1,4 +1,4 @@
-#ther should be some comments here!
+# Internal function; do not use
 Function Test-NetInstalled {
     
     param(

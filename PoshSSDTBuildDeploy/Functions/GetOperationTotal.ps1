@@ -1,3 +1,4 @@
+# Internal Function: do not use
 Function Get-OperationTotal {
     [cmdletbinding()]
     param(
