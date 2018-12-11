@@ -1,4 +1,5 @@
 
+# Internal function; do not use
 function Install-DotNet {
     param ( [string] $WorkingFolder,
         [string] $uri,

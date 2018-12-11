@@ -1,3 +1,4 @@
+# Internal function: do not use
 Function Get-Alerts {
     [cmdletbinding()]
     param(

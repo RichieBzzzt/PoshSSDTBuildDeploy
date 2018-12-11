@@ -1,4 +1,4 @@
-
+# Internal function; do not use
 function Get-SqlCmdVars {
     [CmdletBinding()]
     param

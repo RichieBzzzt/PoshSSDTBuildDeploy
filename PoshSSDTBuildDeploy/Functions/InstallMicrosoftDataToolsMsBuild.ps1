@@ -1,6 +1,35 @@
 
 
 function Install-MicrosoftDataToolsMSBuild {
+     <#
+.SYNOPSIS
+Install Microsoft.Data.Tools.Msbuild from NuGet
+.DESCRIPTION
+Installs Microsoft.Data.Tools.Msbuild into a folder path, optionally using NuGet that is already preinstalled.
+.PARAMETER WorkingFolder
+Mandatory - Location of where NuGet package is to be installed.
+.PARAMETER  DataToolsMsBuildPackageVersion
+OPtional - The version we want to install. 
+.PARAMETER  NuGetPath
+Optional - Can use NuGet already installed or leave blank to downloadNuGet from the internet.   
+.INPUTS
+N/A
+.OUTPUTS
+Directory of Nuget package.
+.EXAMPLE
+Example 1) Download latest NuGet package to PSScriptRoot
+$workingFolder = $PSScriptRoot
+New-Item -ItemType Directory -Force -Path $WorkingFolder
+$msBuildDataTools = Join-Path $WorkingFolder "\Microsoft.Data.Tools.Msbuild\lib\net46"
+if ((Test-Path $msBuildDataTools) -eq $false) {
+    Install-MicrosoftDataToolsMSBuild -WorkingFolder $workingFolder
+}
+if ((Test-Path $msBuildDataTools) -eq $false) {
+    Write-Output "Oh! It looks like MSBuildDataTools did not download."
+}
+.NOTES
+  N/A
+#>
     [cmdletbinding()]
     param ( 
         [parameter(Mandatory)]
