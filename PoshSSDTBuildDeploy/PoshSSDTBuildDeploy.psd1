@@ -75,7 +75,8 @@
     "Install-LocalDb2016",
     "Install-DotNet",
     "Install-NuGet",
-    "Join-Object"
+    "Join-Object",
+    "Publish-FilteredDatabaseDeployment"
     )
     # Cmdlets to export from this module
     CmdletsToExport = '*'
