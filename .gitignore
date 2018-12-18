@@ -16,3 +16,24 @@ tests/wwi-dw-ssdt/WideWorldImporters.Result.DeploymentSummary*
 tests/Publish-DatabaseDeployment.Tests.Richie.ps1
 
 tests/wwi-dw-ssdt/nuget.exe
+
+
+tests/Microsoft.Data.Tools.Msbuild/*
+tests/PublishDbRichie.ps1
+tests/deployScripts/*
+tests/wwi-dw-ssdt/.vs/*
+tests/wwi-dw-ssdt/DepRepWideWorldImportersDW.publish.xml
+tests/wwi-dw-ssdt/Microsoft.SqlServer.DacFx.x64/*
+tests/wwi-dw-ssdt/WideWorldImporters.Result.DeployScript*
+tests/wwi-dw-ssdt/WideWorldImportersDW.sln
+tests/wwi-dw-ssdt/dbo/Tables/TestOne.sql
+tests/wwi-dw-ssdt/dbo/Tables/TestTwo.sql
+
+tests/PublishDb.ps1*
+
+tests/s p a c e s/nuget.exe*
+
+tests/wwi-dw-ssdt/WideWorldImportersDW.dbmdl*
+
+tests/wwi-dw-ssdt/WideWorldImportersDW.jfm*
+
