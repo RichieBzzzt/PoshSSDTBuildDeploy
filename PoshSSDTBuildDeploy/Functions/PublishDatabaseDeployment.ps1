@@ -14,6 +14,7 @@ Function Publish-DatabaseDeployment {
         , $ScriptPath 
         , [Switch] $ScriptOnly
         , [Switch] $FailOnAlerts
+        , [int] $commandTimeoutInSeconds
     )
 
     if (($GenerateDeploymentReport -eq $false) -and ($GenerateDeploymentSummary -eq $true)) {
@@ -59,6 +60,9 @@ Function Publish-DatabaseDeployment {
         else {
             Get-SqlCmdVars $($dacProfile.DeployOptions.SqlCommandVariableValues)
         }
+    }
+    If ($PSBoundParameters.ContainsKey('commandTimeoutInSeconds') -eq $true) {
+        $dacProfile.DeployOptions.commandTimeout = $commandTimeoutInSeconds
     }
     $now = Get-Date 
     $timeStamp = Get-Date $now -Format "yyMMdd_HHmmss_f"
