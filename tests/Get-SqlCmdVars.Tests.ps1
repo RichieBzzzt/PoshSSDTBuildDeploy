@@ -11,11 +11,11 @@ describe "Get-SqlCmdVars" {
             $testVar1 = 'testVar1'
             $testVar2 = 'testVar2'
 
-            #Act
+           
             $SQLCmdVars = @{'testVar1' = 'dummy1'
                             'testVar2' = 'dummy2'
                             'testVar3' = 'dummy2'}
-            #Assert
+            #Act  / Assert
             {Get-SqlCmdVars -sqlCommandVariableValues $SQLCmdVars -FailOnMissingVariables} | Should -Throw "The following SqlCmd variables are not defined in the current session (but are defined in the publish profile): testVar3"
 
         }
