@@ -1,6 +1,7 @@
 #import module from repo
 Import-Module (Join-Path $PSScriptRoot "..\PoshSSDTBuildDeploy") -Force
 Import-Module Pester -Force
+InModuleScope "PoshSSDTBuildDeploy" {
 Describe "Install-MicrosoftDataToolsMSBuild" {
     BeforeAll {
         $spacePath = Join-Path $PSScriptRoot "s p a c e s"
@@ -33,4 +34,22 @@ Describe "Install-MicrosoftDataToolsMSBuild" {
     it "should throw exception for MicrosoftDataToolsMSBuild 10.0.60809" {
         {Install-MicrosoftDataToolsMSBuild -WorkingFolder $WWI -DataToolsMsBuildPackageVersion "10.0.60809"} | Should -Throw "Lower versions than 10.0.61026 will NOT work with Publish-DatabaseDeployment."       
     }
+    Context "Mock .net version is less than 4.6.1"{
+
+        Mock -CommandName Test-NetInstalled -MockWith {
+            return @{ DotNetVersion = "4.6.0"; DWORD = 394253; RequiredVersion = "4.6.1"} }
+
+            {Install-MicrosoftDataToolsMSBuild -WorkingFolder $WWI -DataToolsMsBuildPackageVersion "10.0.61026"} | Should -Throw "Need to install .NET 4.6.1 at least!"       
+
+    }
+
+    Context "Mock .net version is 4.6.1"{
+
+        Mock -CommandName Test-NetInstalled -MockWith {
+            return @{ DotNetVersion = "4.6.1"; DWORD = 394255; RequiredVersion = "4.6.1"} }
+
+            {Install-MicrosoftDataToolsMSBuild -WorkingFolder $WWI -DataToolsMsBuildPackageVersion "10.0.61026"} | Should -Not -Throw       
+
+    }
+}
 }
