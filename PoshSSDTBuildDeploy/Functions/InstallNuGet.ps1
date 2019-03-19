@@ -23,15 +23,15 @@ Function Install-NuGet {
         )
         $NuGetInstallUri = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
         Write-Verbose "Working Folder   : $WorkingFolder" -Verbose
-        $NugetExe = "$WorkingFolder\nuget.exe"
+        $NugetExe = $("$WorkingFolder\nuget.exe")
         if (-not (Test-Path $NugetExe)) {
             Write-Verbose "Cannot find nuget at path $WorkingFolder\nuget.exe" -Verbose
             If (($LinkStatus = Test-DownloadUri -uri $NuGetInstallUri) -ne 200) {
                 Throw "It appears that download Nuget link no longer works. "    
             }
             $sourceNugetExe = $NuGetInstallUri
-            Write-Verbose "$sourceNugetExe -OutFile $NugetExe" -Verbose
-            Invoke-WebRequest $sourceNugetExe -OutFile $NugetExe
+            Write-Verbose $sourceNugetExe -OutFile $NugetExe -Verbose
+            Invoke-WebRequest $sourceNugetExe -OutFile "$NugetExe"
             if (-not (Test-Path $NugetExe)) { 
                 Throw "It appears that the nuget download hasn't worked."
             }

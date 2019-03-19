@@ -37,7 +37,6 @@ if ((Test-Path $msBuildDataTools) -eq $false) {
         [string] $DataToolsMsBuildPackageVersion,
         [string] $NuGetPath
     )
-
     Write-Verbose "Verbose Folder : $WorkingFolder" -Verbose
     Write-Verbose "DataToolsVersion : $DataToolsMsBuildPackageVersion" -Verbose 
     Write-Warning "If DataToolsVersion is blank latest will be used"
@@ -47,7 +46,7 @@ if ((Test-Path $msBuildDataTools) -eq $false) {
     else {
         Write-Verbose "Skipping Nuget download..." -Verbose
         $NuGetExe = Join-Path $NuGetPath "nuget.exe"
-        if (-not (Test-Path $NuGetExe)) {
+        if (-not (Test-Path $($NuGetExe))) {
             Throw "NuGetpath specified, but nuget exe does not exist!"
         }
     }
@@ -64,7 +63,7 @@ if ((Test-Path $msBuildDataTools) -eq $false) {
         $nugetArgs += "-version",$DataToolsMsBuildPackageVersion
     }
     Write-Host $nugetExe ($nugetArgs -join " ") -BackgroundColor White -ForegroundColor DarkGreen
-    &$nugetExe $nugetArgs  2>&1  Out-Host
+    &$nugetExe $nugetArgs  2>&1 | Out-Host
     $SSDTMSbuildFolderNet46 = "$WorkingFolder\Microsoft.Data.Tools.Msbuild\lib\net46"
     if (-not (Test-Path $SSDTMSbuildFolderNet46)) {
         $SSDTMSbuildFolderNet40 = "$WorkingFolder\Microsoft.Data.Tools.Msbuild\lib\net40"
