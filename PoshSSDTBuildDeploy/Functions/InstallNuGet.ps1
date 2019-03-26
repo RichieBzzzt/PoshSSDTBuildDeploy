@@ -30,7 +30,7 @@ Function Install-NuGet {
                 Throw "It appears that download Nuget link no longer works. "    
             }
             $sourceNugetExe = $NuGetInstallUri
-            Write-Verbose $sourceNugetExe -OutFile $NugetExe -Verbose
+            Write-Verbose "$sourceNugetExe -OutFile $NugetExe" -Verbose
             Invoke-WebRequest $sourceNugetExe -OutFile "$NugetExe"
             if (-not (Test-Path $NugetExe)) { 
                 Throw "It appears that the nuget download hasn't worked."
