@@ -47,7 +47,7 @@ if ((Test-Path $dacX64) -eq $false) {
     else {
         Write-Verbose "Skipping Nuget download..." -Verbose
         $NuGetExe = Join-Path $NuGetPath "nuget.exe"
-        if (-not (Test-Path $NuGetExe)) {
+        if (-not (Test-Path $($NuGetExe))) {
             Throw "NuGetpath specified, but nuget exe does not exist!"
         }
     }
