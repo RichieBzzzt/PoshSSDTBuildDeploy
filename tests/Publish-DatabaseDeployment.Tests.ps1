@@ -7,10 +7,14 @@ Describe "Publish-DatabaseDeployment" {
         @(Invoke-Sqlcmd -Query "select db_id('$databaseName') as DbId" -ServerInstance $serverInstanceName) | Select-Object -First 1 -ExpandProperty DbId
     }
 
+    function Get-DbCreationDate ($databaseName, $serverInstanceName) {
+        @(Invoke-Sqlcmd -Query "select create_date as createdate from sys.databases where name = '$databaseName' " -ServerInstance $serverInstanceName) | Select-Object -First 1 -ExpandProperty createdate
+    }
+
     BeforeAll {
         $instanceName = "poshssdtbuilddeploy"
-        sqllocaldb.exe create $instanceName 13.0 -s
-        sqllocaldb.exe info $instanceName
+        SqlLocalDB.exe create $instanceName 13.0 -s
+        SqlLocalDB.exe info $instanceName
     
         $serverInstance = "(localdb)\$instanceName"
         $svrConnstring = "SERVER=$serverInstance;Integrated Security=True;Database=master"
@@ -21,9 +25,9 @@ Describe "Publish-DatabaseDeployment" {
         $WWI_DACFX = Join-Path $WWI_DAC "\Microsoft.SqlServer.Dac.dll"
         $WWI_DACPAC = Join-Path $WWI "\bin\Debug\WideWorldImportersDW.dacpac"
         $WWI_PUB = Join-Path $WWI "\bin\Debug\WideWorldImportersDW.publish.xml"
-        $DeploymentReportPathPattern = Join-path $WWI "*DeploymentReport_*.xml"
-        $DeploymentScriptPathPattern = Join-path $WWI "*DeployScript_*.sql"
-        $DeploymentSummaryPathPattern = Join-path $WWI "*DeploymentSummary_*.txt"
+        $DeploymentReportPathPattern = Join-Path $WWI "*DeploymentReport_*.xml"
+        $DeploymentScriptPathPattern = Join-Path $WWI "*DeployScript_*.sql"
+        $DeploymentSummaryPathPattern = Join-Path $WWI "*DeploymentSummary_*.txt"
     
         #Remove-Item $WWI_DACPAC -Force -ErrorAction SilentlyContinue
         #Invoke-MsBuildSSDT -DatabaseSolutionFilePath $WWI_SLN -DataToolsFilePath $WWI_DAC
@@ -150,5 +154,17 @@ Describe "Publish-DatabaseDeployment" {
             $serverInstance = "(localdb)\$instanceName"
             Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetDatabaseName $WWI_NAME -ScriptPath $WWI -GenerateDeploymentScript $true -getSqlCmdVars -Verbose} | Should -Not -Throw
             Get-DbId -databaseName $WWI_NAME -serverInstanceName "(localdb)\poshssdtbuilddeploy2" | Should -Not -BeNullOrEmpty
+    }
+
+    It "Pass DacDeploy Options" {
+        Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_NAME -GenerateDeploymentScript $true -GenerateDeploymentReport $true -GenerateDeploymentSummary $true -ScriptPath $WWI
+        $expected = Get-DbCreationDate -databaseName $WWI_NAME -serverInstanceName $serverInstance
+        { $deployOptions = @{'commandTimeout' = '180'; 'CreateNewDatabase' = $false } 
+            Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_NAME -GenerateDeploymentScript $true -GenerateDeploymentReport $true -GenerateDeploymentSummary $true -ScriptPath $WWI -dacDeployOptions $deployOptions } | Should -Not -Throw
+        $actual = Get-DbCreationDate -databaseName $WWI_NAME -serverInstanceName $serverInstance | Should -Be $expected
+    }
+    it "Pass Invalid DacDeploy Options" {
+        { $deployOptions = @{'commandTimeout' = '30'; 'bob' = 'false'} 
+        Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_NAME -GenerateDeploymentScript $true -GenerateDeploymentReport $true -GenerateDeploymentSummary $true -ScriptPath $WWI -dacDeployOptions $deployOptions } | Should -Throw
     }
 }
