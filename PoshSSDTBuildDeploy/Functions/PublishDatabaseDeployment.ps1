@@ -15,6 +15,7 @@ Function Publish-DatabaseDeployment {
         , [Switch] $ScriptOnly
         , [Switch] $FailOnAlerts
         , [int] $commandTimeoutInSeconds
+        , [hashtable] $dacDeployOptions
     )
 
     if (($GenerateDeploymentReport -eq $false) -and ($GenerateDeploymentSummary -eq $true)) {
@@ -64,6 +65,20 @@ Function Publish-DatabaseDeployment {
     If ($PSBoundParameters.ContainsKey('commandTimeoutInSeconds') -eq $true) {
         $dacProfile.DeployOptions.commandTimeout = $commandTimeoutInSeconds
     }
+
+    foreach ($key in $dacDeployOptions.Keys) {
+        try {
+            $oldValue = $dacProfile.DeployOptions.$key
+            $dacProfile.DeployOptions.$key = $dacDeployOptions[$key]
+            Write-Host "Altered value of $($key) from $($oldValue) to $($dacProfile.DeployOptions.$key)"
+        }
+        catch {
+            Write-Host $_.Exception
+            throw
+        }
+        
+    }
+
     $now = Get-Date 
     $timeStamp = Get-Date $now -Format "yyMMdd_HHmmss_f"
     $DatabaseScriptPath = Join-Path $ScriptPath "$($targetDatabaseName).Result.DeployScript_$timeStamp.sql"
@@ -143,7 +158,7 @@ Function Publish-DatabaseDeployment {
             DeployOptions                              = $deployOptions
             SqlCmdVariableValues                       = $dacProfile.DeployOptions.SqlCommandVariableValues.Keys
             TargetConnectionStringLoadedFromPublishXml = $TargetConnectionStringLoadedFromPublishXml
-        }
+        } | Format-Table
         if ($GenerateDeplymentSummary -eq $true) {
             [pscustomobject]$OperationTotal | Format-Table
             [pscustomobject]$OperationSummary | Format-Table
