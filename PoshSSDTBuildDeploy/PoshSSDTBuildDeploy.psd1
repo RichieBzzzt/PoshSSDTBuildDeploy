@@ -76,7 +76,8 @@
     "Install-DotNet",
     "Install-NuGet",
     "Join-Object",
-    "Publish-FilteredDatabaseDeployment"
+    "Publish-FilteredDatabaseDeployment",
+    "Set-DacDeployOtions"
     )
     # Cmdlets to export from this module
     CmdletsToExport = '*'
