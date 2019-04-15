@@ -16,6 +16,7 @@ Function Publish-DatabaseDeployment {
         , [Switch] $FailOnAlerts
         , [int] $commandTimeoutInSeconds
         , [hashtable] $dacDeployOptions
+        , [ValidateSet("File","Memory")] [string] $StorageType
     )
 
     if (($GenerateDeploymentReport -eq $false) -and ($GenerateDeploymentSummary -eq $true)) {
@@ -39,7 +40,12 @@ Function Publish-DatabaseDeployment {
         throw ("Exception caught: {0}" -f $_.Exception.GetType().FullName)
     }
     
-    $dacPackage = [Microsoft.SqlServer.Dac.DacPackage]::Load($Dacpac)
+    if ($PSBoundParameters.ContainsKey('storageType') -eq $true) {
+        $dacPackage = [Microsoft.SqlServer.Dac.DacPackage]::Load($Dacpac, [Microsoft.SqlServer.Dac.DacSchemaModelStorageType]::$StorageType)
+    }
+    else {
+        $dacPackage = [Microsoft.SqlServer.Dac.DacPackage]::Load($Dacpac)
+    }
     Write-Host ("Loaded dacpac '{0}'." -f $Dacpac) -ForegroundColor White -BackgroundColor DarkMagenta
     
     $dacProfile = [Microsoft.SqlServer.Dac.DacProfile]::Load($publishXml)
@@ -129,7 +135,7 @@ Function Publish-DatabaseDeployment {
                 $OperationTotal | Out-String | Add-Content $DeploymentSummary
                 $OperationSummary | Out-String | Add-Content $DeploymentSummary
                 $Alerts | Out-String | Add-Content $DeploymentSummary
-                $JoinTables | Out-String | Where-Object {$null -ne $_.IssueId} | Add-Content $DeploymentSummary
+                $JoinTables | Out-String | Where-Object { $null -ne $_.IssueId } | Add-Content $DeploymentSummary
             }
         }
         if ($GenerateDeploymentScript -eq $true) {
@@ -154,7 +160,7 @@ Function Publish-DatabaseDeployment {
             [pscustomobject]$OperationTotal | Format-Table
             [pscustomobject]$OperationSummary | Format-Table
             [pscustomobject]$Alerts | Format-Table
-            [pscustomobject]$JoinTables | Where-Object {$null -ne $_.IssueId}  | Format-Table
+            [pscustomobject]$JoinTables | Where-Object { $null -ne $_.IssueId } | Format-Table
         
             if ($PSBoundParameters.ContainsKey('FailOnAlerts') -eq $true) { 
                 if ($Alerts.Count -gt 0) {

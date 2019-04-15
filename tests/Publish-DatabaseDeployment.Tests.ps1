@@ -174,4 +174,22 @@ Describe "Publish-DatabaseDeployment" {
         { $deployOptions = @{'commandTimeout' = "180"; 'CreateNewDatabase' = $false } 
             Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_NAME -GenerateDeploymentScript $true -GenerateDeploymentReport $true -GenerateDeploymentSummary $true -ScriptPath $WWI -dacDeployOptions $deployOptions } | Should -Throw
     }
+
+
+    it "Storage Type is set to Memory" {
+        {Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_NAME -GenerateDeploymentScript $false -GenerateDeploymentReport $false -GenerateDeploymentSummary $false -ScriptPath $WWI  -StorageType "Memory" } | Should -Not -Throw
+        Get-DbId -databaseName $WWI_NAME -serverInstanceName $serverInstance | Should -Not -BeNullOrEmpty
+    }
+    
+    
+    it "Storage Type is set to File" {
+        {Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_NAME -GenerateDeploymentScript $false -GenerateDeploymentReport $false -GenerateDeploymentSummary $false -ScriptPath $WWI  -StorageType "File" } | Should -Not -Throw
+        Get-DbId -databaseName $WWI_NAME -serverInstanceName $serverInstance | Should -Not -BeNullOrEmpty
+    }
+    
+    
+    it "Storage Type is set to something invalid, throws." {
+        {Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_NAME -GenerateDeploymentScript $true -GenerateDeploymentReport $false -GenerateDeploymentSummary $false -StorageType "something invalid" } | Should -Throw
+    }
+    
 }
