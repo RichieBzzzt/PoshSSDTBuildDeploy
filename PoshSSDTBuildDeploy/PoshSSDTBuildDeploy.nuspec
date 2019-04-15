@@ -27,6 +27,7 @@
 <file src="Functions\JoinObject.ps1" target="Functions"/>
 <file src="Functions\TestDownloadUri.ps1" target="Functions"/>
 <file src="Functions\PublishFIlteredDatabaseDeployment.ps1" target="Functions"/>
+<file src="Functions\SetDacDeployOptions.ps1" target="Functions"/>
 <file src="scripts\ImportLogo.ps1" target="scripts"/>
 </files>
 </package>

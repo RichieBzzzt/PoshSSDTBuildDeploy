@@ -66,17 +66,8 @@ Function Publish-DatabaseDeployment {
         $dacProfile.DeployOptions.commandTimeout = $commandTimeoutInSeconds
     }
 
-    foreach ($key in $dacDeployOptions.Keys) {
-        try {
-            $oldValue = $dacProfile.DeployOptions.$key
-            $dacProfile.DeployOptions.$key = $dacDeployOptions[$key]
-            Write-Host "Altered value of $($key) from $($oldValue) to $($dacProfile.DeployOptions.$key)"
-        }
-        catch {
-            Write-Host $_.Exception
-            throw
-        }
-        
+    If ($PSBoundParameters.ContainsKey('dacDeployOptions') -eq $true) {
+        $dacpProfile = Set-DacDeployOptions -dacProfile $dacProfile -dacDeployOptions $dacDeployOptions
     }
 
     $now = Get-Date 
