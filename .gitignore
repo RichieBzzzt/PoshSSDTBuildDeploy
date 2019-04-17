@@ -48,3 +48,9 @@ testProject/Northwind/Microsoft.SqlServer.DacFx.x64/
 testProject/Northwind/nuget.exe
 tests/TestRun.xml
 tests/deprep/tracelog.log
+
+testProject/Northwind/Northwind.dbmdl
+testProject/Northwind/Northwind.jfm
+testProject/Northwind/Northwind.sqlproj.user
+testProject/Northwind/bin/
+testProject/Northwind/obj/
