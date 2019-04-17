@@ -38,3 +38,13 @@ tests/wwi-dw-ssdt/WideWorldImportersDW.dbmdl*
 tests/wwi-dw-ssdt/WideWorldImportersDW.jfm*
 
 tests/s p a c e s/nuget.exe
+
+PoshSSDTBuildDeploy/Functions/TraceLog.ps1
+TestRun.xml
+testProject/Northwind/.gitattributes
+testProject/Northwind/.gitignore
+testProject/Northwind/Microsoft.Data.Tools.Msbuild/
+testProject/Northwind/Microsoft.SqlServer.DacFx.x64/
+testProject/Northwind/nuget.exe
+tests/TestRun.xml
+tests/deprep/tracelog.log

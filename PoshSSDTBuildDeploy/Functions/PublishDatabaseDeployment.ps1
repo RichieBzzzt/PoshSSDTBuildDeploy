@@ -155,7 +155,7 @@ Function Publish-DatabaseDeployment {
             DeployOptions                              = $deployOptions
             SqlCmdVariableValues                       = $dacProfile.DeployOptions.SqlCommandVariableValues.Keys
             TargetConnectionStringLoadedFromPublishXml = $TargetConnectionStringLoadedFromPublishXml
-        } | Format-Table
+        }
         if ($GenerateDeplymentSummary -eq $true) {
             [pscustomobject]$OperationTotal | Format-Table
             [pscustomobject]$OperationSummary | Format-Table
