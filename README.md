@@ -8,9 +8,13 @@ PowerShell Module designed to make use of [Microsoft.Data.Tools.MSBuild](https:/
 
 [<img src="https://bzzztio.visualstudio.com/_apis/public/build/definitions/e986a19c-74f7-4d1f-8316-7f478f3d6646/5/badge"/>](https://bzzztio.visualstudio.com/PoshSSDTBuildDeploy/_apps/hub/ms.vss-ciworkflow.build-ci-hub?_a=edit-build-definition&id=5)
 
-### Publish Build
+### Master Branch Build
 
 [<img src="https://bzzztio.visualstudio.com/_apis/public/build/definitions/e986a19c-74f7-4d1f-8316-7f478f3d6646/20/badge"/>](https://bzzztio.visualstudio.com/PoshSSDTBuildDeploy/_apps/hub/ms.vss-ciworkflow.build-ci-hub?_a=edit-build-definition&id=20)
+
+### Test Build Project
+
+[![Build status](https://bzzztio.visualstudio.com/PoshSSDTBuildDeploy/_apis/build/status/PoshSSDTBuildDeploy-BuildTestProject)](https://bzzztio.visualstudio.com/PoshSSDTBuildDeploy/_build/latest?definitionId=34)
 
 ## Latest Releases
 

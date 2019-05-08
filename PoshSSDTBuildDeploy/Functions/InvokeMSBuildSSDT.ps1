@@ -1,7 +1,7 @@
 ﻿
 
 function Invoke-MsBuildSSDT {
-           <#
+    <#
 .SYNOPSIS
 Build a datbase project/solution using Microsoft.Data.Tools.MSBuild
 .DESCRIPTION
@@ -38,27 +38,28 @@ if ((Test-Path $msBuildDataTools) -eq $false) {
 #>
     param ( [string] $DatabaseSolutionFilePath
         , [string] $DataToolsFilePath
-        , [string]$MSBuildVersionNumber)
+        , [string]$MSBuildVersionNumber
+        , [ValidateSet("Professional", "Enterprise", "Community", "BuildTools")][string]$VisualStudioVersion
+        , [switch] $ValidatePackageManager
+        , [string] $dacPacRootPath
+        )
 
     if ([string]::IsNullOrEmpty($MSBuildVersionNumber)) {
         $MSBuildVersionNumber = "15.0"
     }
     if ($MSBuildVersionNumber -eq "15.0") {
-        $filepath = "C:\Program Files (x86)\Microsoft Visual Studio\2017"
-        $folders = Get-ChildItem $filepath
-        $MsBuildInstalled = 0
-        foreach ($folder in $folders) {
-            $MsbuildPath = Join-Path $filepath "$folder\MSBuild\15.0\Bin"
-            if ((Test-Path $MsbuildPath) -eq $true) {
-                Write-Host "MsBuild found!" -ForegroundColor Green -BackgroundColor Yellow
-                $MsBuild = Join-Path $MsbuildPath "msbuild.exe"
-                $MsBuildInstalled = 1
-                break
-            }
+        if ($PSBoundParameters.ContainsKey('VisualStudioVersion') -eq $true) {
+            $filepath = Join-Path "C:\Program Files (x86)\Microsoft Visual Studio\2017" $VisualStudioVersion  
+            $MsbuildPath = Join-Path $filepath "MSBuild\15.0\Bin"
+            $msbuild = Test-MsBuildInstalled -MsbuildPath $msbuildPath
         }
-        if ($MsBuildInstalled -eq 0) {
-            Write-Error "Install Visual Studio Tools 2017 MSBuild Tools to continue!"
-            Throw
+        else {
+            $filepath = "C:\Program Files (x86)\Microsoft Visual Studio\2017"
+            $folders = Get-ChildItem $filepath
+            foreach ($folder in $folders) {
+                $MsbuildPath = Join-Path $filepath "$folder\MSBuild\15.0\Bin"
+                $msbuild = Test-MsBuildInstalled -MsbuildPath $msbuildPath
+            }
         }
     }
     else {
@@ -68,12 +69,44 @@ if ((Test-Path $msBuildDataTools) -eq $false) {
         Write-Error "No MSBuild installed. Install Build Tools using 'Install-VsBuildTools2017', set -MSBuildVersionNumber to 15.0 and try again!"
         Throw
     }
+
+    if ($PSBoundParameters.ContainsKey('ValidatePackageManager') -eq $true) {
+        if ($PSBoundParameters.ContainsKey('VisualStudioVersion') -eq $true) {
+            $filepath = Join-Path "C:\Program Files (x86)\Microsoft Visual Studio\2017" $VisualStudioVersion  
+        }
+        else {
+            $filepath = "C:\Program Files (x86)\Microsoft Visual Studio\2017"
+        }
+        $folders = Get-ChildItem $filepath
+        $PackageManagerInstalled = 0
+        foreach ($folder in $folders) {
+            $packageManagerPath = Join-Path $filepath "$folder\Common7\IDE\CommonExtensions\Microsoft\NuGet"
+            if ((Test-Path $packageManagerPath) -eq $true) {
+                Write-Host "PackageManager extension found!" -ForegroundColor Green -BackgroundColor Yellow
+                Write-Host $packageManagerPath -ForegroundColor White -BackgroundColor DarkCyan
+                $PackageManagerInstalled = 1
+                break
+            }
+        }
+        if ($PackageManagerInstalled -eq 0) {
+            Write-Error "Install Visual Studio Tools 2017 Nuget Package Manager to continue!"
+            Throw
+        }
+    }
+    
+
     $arg1 = "/p:tv=$MSBuildVersionNumber"
     $arg2 = "/p:SSDTPath=$DataToolsFilePath"
     $arg3 = "/p:SQLDBExtensionsRefPath=$DataToolsFilePath"
     $arg4 = "/p:Configuration=Debug"
-
-    Write-Host $msbuild $DatabaseSolutionFilePath $arg1 $arg2 $arg3 $arg4 -ForegroundColor White -BackgroundColor DarkGreen
-
-    & $msbuild $DatabaseSolutionFilePath $arg1 $arg2 $arg3 $arg4 2>&1
+    if ($PSBoundParameters.ContainsKey('dacPacRootPath') -eq $true) {
+        $arg5 = "/p:dacPacRootPath=$dacPacRootPath"
+        
+        Write-Host $msbuild $DatabaseSolutionFilePath $arg1 $arg2 $arg3 $arg4 $arg5 -ForegroundColor White -BackgroundColor DarkCyan
+        & $msbuild $DatabaseSolutionFilePath $arg1 $arg2 $arg3 $arg4 $arg5 2>&1
+    }
+    else {
+        Write-Host $msbuild $DatabaseSolutionFilePath $arg1 $arg2 $arg3 $arg4 -ForegroundColor White -BackgroundColor DarkGreen
+        & $msbuild $DatabaseSolutionFilePath $arg1 $arg2 $arg3 $arg4 2>&1
+    }
 }

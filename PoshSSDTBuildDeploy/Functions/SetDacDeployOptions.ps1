@@ -5,8 +5,6 @@ Function Set-DacDeployOptions {
         [Microsoft.SqlServer.Dac.DacProfile]$dacProfile
         , [hashtable] $dacDeployOptions
     )
-    Write-Host "Bob"
-
     foreach ($key in $dacDeployOptions.Keys) {
         try {
             $oldValueType = $dacProfile.DeployOptions.$key.GetType()

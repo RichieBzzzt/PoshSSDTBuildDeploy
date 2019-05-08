@@ -33,6 +33,7 @@ Install-LocalDb2016 -LocalDbMsiPath $msi -targetVersion $tv
         [Parameter(Mandatory = $true)]
         [string] $targetVersion
     )
+    
     $registryPath = "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL13E.LOCALDB\MSSQLServer\CurrentVersion"
     if ( -not (Test-Path $registryPath)) {
         Write-Verbose "Microsoft SQL Server 2016 LocalDB not installed." -Verbose
@@ -48,8 +49,9 @@ Install-LocalDb2016 -LocalDbMsiPath $msi -targetVersion $tv
     }
     if ($install -eq $true) {
         try {
+            $msi = Get-LocalDb2016 -WorkingFolder $LocalDbMsiPath -targetVersion $tv
             Write-Verbose "Installing Microsoft SQL Server 2016 LocalDB..." -Verbose
-            Start-Process -FilePath "msiexec.exe" -ArgumentList "/i $LocalDbMsiPath /q IACCEPTSQLLOCALDBLICENSETERMS=YES" -Wait | Out-Null
+            Start-Process -FilePath "msiexec.exe" -ArgumentList "/i $msi /q IACCEPTSQLLOCALDBLICENSETERMS=YES" -Wait | Out-Null
         }
         catch {
             Throw "It appears LocalDB has not installed properly."

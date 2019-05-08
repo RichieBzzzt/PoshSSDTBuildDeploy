@@ -53,8 +53,7 @@
  
     # Script files (.psm1) that are run in the caller's environment prior to importing this module
     ScriptsToProcess = @(
-        'Scripts\ImportLogo.ps1'
-    )
+)
  
     # Format files (.psm1xml) to be loaded when importing this module
     FormatsToProcess = @()
@@ -66,6 +65,7 @@
     'Invoke-MsBuildSSDT',
     'Publish-DatabaseDeployment',
     'Test-NetInstalled',
+    'Test-MsBuildInstalled',
     'Install-VsBuildTools2017',
     "Get-Alerts",
     "Get-LocalDb2016",
@@ -76,8 +76,7 @@
     "Install-DotNet",
     "Install-NuGet",
     "Join-Object",
-    "Publish-FilteredDatabaseDeployment",
-    "Set-DacDeployOtions"
+    "Publish-FilteredDatabaseDeployment"
     )
     # Cmdlets to export from this module
     CmdletsToExport = '*'
