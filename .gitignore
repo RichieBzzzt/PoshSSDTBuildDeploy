@@ -54,3 +54,15 @@ testProject/Northwind/Northwind.jfm
 testProject/Northwind/Northwind.sqlproj.user
 testProject/Northwind/bin/
 testProject/Northwind/obj/
+
+tests/s p a c e s/nuget.exe
+tests/sqlclr/bin/
+tests/sqlclr/nuget.exe
+tests/sqlclr/obj/
+
+tests/sqlclr/sqlclr.nonsql/bin/
+tests/sqlclr/sqlclr.nonsql/obj/
+
+tests/sqlclr/Microsoft.Data.Tools.Msbuild/*
+
+
