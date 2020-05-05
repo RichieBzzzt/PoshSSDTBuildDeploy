@@ -1,6 +1,6 @@
 #import module from repo
 Import-Module (Join-Path $PSScriptRoot "..\PoshSSDTBuildDeploy") -Force
-Import-Module Pester -Force
+
 InModuleScope "PoshSSDTBuildDeploy" {
 Describe "Install-MicrosoftDataToolsMSBuild" {
     BeforeAll {

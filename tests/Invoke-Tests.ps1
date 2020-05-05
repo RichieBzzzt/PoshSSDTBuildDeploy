@@ -23,4 +23,4 @@ catch {
 }
 $ErrorActionPreference = "Stop"
 $outputFile = 'TestRun.xml'
-Invoke-Pester .\**\*.Tests.ps1 -PassThru -outputFile $outputFile -OutputFormat NUnitXml -EnableExit
+Invoke-Pester .\**\*.Tests.ps1 -PassThru -outputFile $outputFile -OutputFormat NUnitXml #-EnableExit

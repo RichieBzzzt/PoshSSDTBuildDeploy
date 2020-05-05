@@ -51,9 +51,6 @@ Describe "Publish-FilteredDatabaseDeployment" {
     }
     it "Missing table for foreign key, will not throw as not publishing changes" {
         {Publish-FilteredDatabaseDeployment -dacfxPath $FD_DACFX -dacpac $FD_DACPAC_BROKEN -targetConnectionString $svrConnstring -targetDatabaseName $FD_NAME -schemaToInclude "$FD_SCHEMA"} | Should -Not -Throw
-        Get-Schema -databaseName $FD_NAME -serverInstanceName $serverInstance -schema "Production" | Should -Not -BeNullOrEmpty
-        Get-Schema -databaseName $FD_NAME -serverInstanceName $serverInstance -schema "UnProduction" | Should -Not -BeNullOrEmpty
-        Get-Schema -databaseName $FD_NAME -serverInstanceName $serverInstance -schema "dbo" | Should -Not -BeNullOrEmpty
     }
     it "Missing table for foreign key, will not throw as publishing changes" {
         {Publish-FilteredDatabaseDeployment -dacfxPath $FD_DACFX -dacpac $FD_DACPAC_BROKEN -targetConnectionString $svrConnstring -targetDatabaseName $FD_NAME -schemaToInclude "$FD_SCHEMA" -PublishChangesToTarget} | Should -Not -Throw

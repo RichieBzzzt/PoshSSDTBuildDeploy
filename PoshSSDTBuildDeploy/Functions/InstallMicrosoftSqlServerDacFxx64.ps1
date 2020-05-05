@@ -1,5 +1,3 @@
-
-
 function Install-MicrosoftSqlServerDacFxx64 {
          <#
 .SYNOPSIS
