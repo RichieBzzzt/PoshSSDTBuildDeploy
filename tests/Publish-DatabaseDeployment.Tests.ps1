@@ -12,6 +12,11 @@ Describe "Publish-DatabaseDeployment" {
     }
 
     BeforeAll {
+        $instanceName = "poshssdtbuilddeploy2"
+        sqllocaldb.exe create $instanceName 13.0 -s
+        sqllocaldb.exe info $instanceName
+        $serverInstance = "(localdb)\$instanceName"
+
         $instanceName = "poshssdtbuilddeploy"
         SqlLocalDB.exe create $instanceName 13.0 -s
         SqlLocalDB.exe info $instanceName
@@ -28,6 +33,8 @@ Describe "Publish-DatabaseDeployment" {
         $DeploymentReportPathPattern = Join-Path $WWI "*DeploymentReport_*.xml"
         $DeploymentScriptPathPattern = Join-Path $WWI "*DeployScript_*.sql"
         $DeploymentSummaryPathPattern = Join-Path $WWI "*DeploymentSummary_*.txt"
+
+        Install-MicrosoftDataToolsMSBuild -WorkingFolder $WWI
     
         #Remove-Item $WWI_DACPAC -Force -ErrorAction SilentlyContinue
         #Invoke-MsBuildSSDT -DatabaseSolutionFilePath $WWI_SLN -DataToolsFilePath $WWI_DAC
@@ -124,7 +131,7 @@ Describe "Publish-DatabaseDeployment" {
             Should -Throw "Script Path Invalid"
     }
     it "Throws exception that variable is not included in session" {
-        Remove-Variable DeployTag -Scope "Global" -Force
+        Remove-Variable DeployTag -Scope "Global" -Force -ErrorAction SilentlyContinue
         {Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetConnectionString $svrConnstring -targetDatabaseName $WWI_NAME -GenerateDeploymentScript $false -GenerateDeploymentReport $false -ScriptPath $WWI -getSqlCmdVars -FailOnMissingVars } | 
             Should -Throw
     }
@@ -148,10 +155,6 @@ Describe "Publish-DatabaseDeployment" {
     it "Connection String from publish.xml is used for publishing database." {
         {
             $WWI_PUB = Join-Path $WWI "\bin\Debug\WideWorldImportersDW_PesterTestLocalConnString.publish.xml"
-            $instanceName = "poshssdtbuilddeploy2"
-            sqllocaldb.exe create $instanceName 13.0 -s
-            sqllocaldb.exe info $instanceName
-            $serverInstance = "(localdb)\$instanceName"
             Publish-DatabaseDeployment -dacfxPath $WWI_DACFX -dacpac $WWI_DACPAC -publishXml $WWI_PUB -targetDatabaseName $WWI_NAME -ScriptPath $WWI -GenerateDeploymentScript $true -getSqlCmdVars -Verbose} | Should -Not -Throw
             Get-DbId -databaseName $WWI_NAME -serverInstanceName "(localdb)\poshssdtbuilddeploy2" | Should -Not -BeNullOrEmpty
     }

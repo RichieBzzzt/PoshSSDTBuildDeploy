@@ -1,0 +1,6 @@
+C:\Users\RichardLee\source\repos\PoshSSDTBuildDeploy\tests\sqlclr\sqlclr.nonsql\bin\Debug\sqlclr.nonsql.dll
+C:\Users\RichardLee\source\repos\PoshSSDTBuildDeploy\tests\sqlclr\sqlclr.nonsql\bin\Debug\sqlclr.nonsql.pdb
+C:\Users\RichardLee\source\repos\PoshSSDTBuildDeploy\tests\sqlclr\sqlclr.nonsql\obj\Debug\sqlclr.nonsql.csprojAssemblyReference.cache
+C:\Users\RichardLee\source\repos\PoshSSDTBuildDeploy\tests\sqlclr\sqlclr.nonsql\obj\Debug\sqlclr.nonsql.csproj.CoreCompileInputs.cache
+C:\Users\RichardLee\source\repos\PoshSSDTBuildDeploy\tests\sqlclr\sqlclr.nonsql\obj\Debug\sqlclr.nonsql.dll
+C:\Users\RichardLee\source\repos\PoshSSDTBuildDeploy\tests\sqlclr\sqlclr.nonsql\obj\Debug\sqlclr.nonsql.pdb

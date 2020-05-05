@@ -1,0 +1,10 @@
+C:\Users\RichardLee\source\repos\PoshSSDTBuildDeploy\tests\sqlclr\bin\Debug\sqlclr.dacpac
+C:\Users\RichardLee\source\repos\PoshSSDTBuildDeploy\tests\sqlclr\bin\Debug\sqlclr.publish.xml
+C:\Users\RichardLee\source\repos\PoshSSDTBuildDeploy\tests\sqlclr\bin\Debug\sqlclr.dll
+C:\Users\RichardLee\source\repos\PoshSSDTBuildDeploy\tests\sqlclr\bin\Debug\sqlclr.pdb
+C:\Users\RichardLee\source\repos\PoshSSDTBuildDeploy\tests\sqlclr\bin\Debug\sqlclr.nonsql.dll
+C:\Users\RichardLee\source\repos\PoshSSDTBuildDeploy\tests\sqlclr\bin\Debug\sqlclr.nonsql.pdb
+C:\Users\RichardLee\source\repos\PoshSSDTBuildDeploy\tests\sqlclr\obj\Debug\sqlclr.sqlprojAssemblyReference.cache
+C:\Users\RichardLee\source\repos\PoshSSDTBuildDeploy\tests\sqlclr\obj\Debug\sqlclr.sqlproj.CopyComplete
+C:\Users\RichardLee\source\repos\PoshSSDTBuildDeploy\tests\sqlclr\obj\Debug\sqlclr.dll
+C:\Users\RichardLee\source\repos\PoshSSDTBuildDeploy\tests\sqlclr\obj\Debug\sqlclr.pdb

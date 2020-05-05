@@ -1,7 +1,7 @@
 ﻿
 
 function Invoke-MsBuildSSDT {
-           <#
+    <#
 .SYNOPSIS
 Build a datbase project/solution using Microsoft.Data.Tools.MSBuild
 .DESCRIPTION
@@ -11,7 +11,9 @@ Mandatory - Filepath to the sln/sqlproj file.
 .PARAMETER  DataToolsFilePath
 Mandatory - Location of the Micorosft.Data.Tools.MSBuild. Required for SSDTPath and ExtensionsReferences.
 .PARAMETER  MSBuildVersionNumber
-Optional - Specify if using version 14 or 15. Will default to 15 if left blank. Can be installed by using Install-VSBuildTools2017. 
+Optional - Specify if using version 14 or 15 or 16. Will default to 15 if left blank. Can be installed by using Install-VSBuildTools2017. 
+.PARAMETER  MSBuild
+Optional - path to MSBuild 
 .INPUTS
 N/A
 .OUTPUTS
@@ -38,34 +40,39 @@ if ((Test-Path $msBuildDataTools) -eq $false) {
 #>
     param ( [string] $DatabaseSolutionFilePath
         , [string] $DataToolsFilePath
-        , [string]$MSBuildVersionNumber)
+        , [string]$MSBuildVersionNumber
+        , [string]$msbuild
+    )
 
-    if ([string]::IsNullOrEmpty($MSBuildVersionNumber)) {
-        $MSBuildVersionNumber = "15.0"
-    }
-    if ($MSBuildVersionNumber -eq "15.0") {
-        $filepath = "C:\Program Files (x86)\Microsoft Visual Studio\2017"
-        $folders = Get-ChildItem $filepath
-        $MsBuildInstalled = 0
-        foreach ($folder in $folders) {
-            $MsbuildPath = Join-Path $filepath "$folder\MSBuild\15.0\Bin"
-            if ((Test-Path $MsbuildPath) -eq $true) {
-                Write-Host "MsBuild found!" -ForegroundColor Green -BackgroundColor Yellow
-                $MsBuild = Join-Path $MsbuildPath "msbuild.exe"
-                $MsBuildInstalled = 1
-                break
+    if ($PSBoundParameters.ContainsKey('msbuild') -eq $false) {
+            
+        if ([string]::IsNullOrEmpty($MSBuildVersionNumber)) {
+            $MSBuildVersionNumber = "15.0"
+        }
+        if ($MSBuildVersionNumber -eq "15.0") {
+            $filepath = "C:\Program Files (x86)\Microsoft Visual Studio\2017"
+            $folders = Get-ChildItem $filepath
+            $MsBuildInstalled = 0
+            foreach ($folder in $folders) {
+                $MsbuildPath = "$($folder.FullName)\MSBuild\15.0\Bin"
+                if ((Test-Path $MsbuildPath) -eq $true) {
+                    Write-Host "MsBuild found!" -ForegroundColor Green -BackgroundColor Yellow
+                    $MsBuild = Join-Path $MsbuildPath "msbuild.exe"
+                    $MsBuildInstalled = 1
+                    break
+                }
+            }
+            if ($MsBuildInstalled -eq 0) {
+                Write-Error "Install Visual Studio Tools 2017 MSBuild Tools to continue!"
+                Throw
             }
         }
-        if ($MsBuildInstalled -eq 0) {
-            Write-Error "Install Visual Studio Tools 2017 MSBuild Tools to continue!"
-            Throw
+        else {
+            $msbuild = "C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe"
         }
     }
-    else {
-        $msbuild = "C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe"
-    }
     if (-not (Test-Path $msbuild)) {
-        Write-Error "No MSBuild installed. Install Build Tools using 'Install-VsBuildTools2017', set -MSBuildVersionNumber to 15.0 and try again!"
+        Write-Error "No MSBuild installed. Either specify correct path or install Build Tools using 'Install-VsBuildTools2017', set -MSBuildVersionNumber to 15.0 and try again!"
         Throw
     }
     $arg1 = "/p:tv=$MSBuildVersionNumber"
