@@ -5,8 +5,9 @@ SqlLocalDB.exe info $instanceName
 $serverInstance = "(localdb)\$instanceName"
 $str = "SERVER=$serverInstance;Integrated Security=True;Database=master"
 
-$dacpac = Resolve-Path .\bin\Debug\Northwind.dacpac
-$pubFile = Resolve-Path .\bin\Debug\Northwind.publish.xml
+$dacpac = Resolve-Path (Join-Path $PSScriptRoot .\bin\Debug\Northwind.dacpac)
+$pubFile = Resolve-Path (Join-Path $PSScriptRoot .\bin\Debug\Northwind.publish.xml)
+
 $poshSSDTBuildDeploy = Join-Path $PSScriptRoot "..\..\poshssdtbuilddeploy"
 
 .\deployNorthwind.ps1 -WorkingFolder $PSScriptRoot -connectionString $str -DatabaseName "Northwind" -DacpacPath $dacpac -PublishProfile $pubFile -ModulePath $poshSSDTBuildDeploy
