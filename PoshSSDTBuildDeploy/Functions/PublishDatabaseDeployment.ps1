@@ -16,7 +16,7 @@ Function Publish-DatabaseDeployment {
         , [Switch] $FailOnAlerts
         , [int] $commandTimeoutInSeconds
         , [hashtable] $dacDeployOptions
-        , [ValidateSet("File","Memory")] [string] $StorageType
+        , [ValidateSet("File", "Memory")] [string] $StorageType
     )
 
     if (($GenerateDeploymentReport -eq $false) -and ($GenerateDeploymentSummary -eq $true)) {
@@ -145,23 +145,31 @@ Function Publish-DatabaseDeployment {
             }
         }    
         $deployOptions = $dacProfile.DeployOptions | Select-Object -Property * -ExcludeProperty "SqlCommandVariableValues"
-        [pscustomobject]@{
+        $deployResult = [pscustomobject]@{
             Dacpac                                     = $dacpac
             PublishXml                                 = $PublishXml
-            DatabaseScriptPath                         = $DatabaseScriptPath
-            MasterDbScriptPath                         = $($result.MasterDbScript)
-            DeploymentReport                           = $DeploymentReport
-            DeploymentSummary                          = $DeploymentSummary
             DeployOptions                              = $deployOptions
             SqlCmdVariableValues                       = $dacProfile.DeployOptions.SqlCommandVariableValues.Keys
             TargetConnectionStringLoadedFromPublishXml = $TargetConnectionStringLoadedFromPublishXml
         }
+        if ($GenerateDeploymentScript -eq $true) {
+            $deployResult | Add-Member -MemberType NoteProperty  -Name "DatabaseScriptPath" -Value $DatabaseScriptPath
+            if ((Test-Path $MasterDbScriptPath) -eq $true) {
+                $deployResult | Add-Member -MemberType NoteProperty  -Name "MasterDbScriptPath" -Value $result.MasterDbScript
+            }
+        }
+        if ($GenerateDeploymentScript -eq $true) {
+            $deployResult | Add-Member -MemberType NoteProperty  -Name "DeploymentReport" -Value $DeploymentReport
+        }
+        if ($GenerateDeploymentSummary -eq $true) {
+            $deployResult | Add-Member -MemberType NoteProperty  -Name "DeploymentSummary" -Value $DeploymentSummary
+        }
+        $deployResult
         if ($GenerateDeplymentSummary -eq $true) {
             [pscustomobject]$OperationTotal | Format-Table
             [pscustomobject]$OperationSummary | Format-Table
             [pscustomobject]$Alerts | Format-Table
             [pscustomobject]$JoinTables | Where-Object { $null -ne $_.IssueId } | Format-Table
-        
             if ($PSBoundParameters.ContainsKey('FailOnAlerts') -eq $true) { 
                 if ($Alerts.Count -gt 0) {
                     Write-Error "Alerts found, failing. Consult tables above."
