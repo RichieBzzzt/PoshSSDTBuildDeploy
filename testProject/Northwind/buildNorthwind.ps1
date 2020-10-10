@@ -1,7 +1,8 @@
 
 Param(
     [string] $databaseName = 'Northwind',
-    [string] $dataBaseProjectFileName = 'Northwind.sqlproj'
+    [string] $dataBaseProjectFileName = 'Northwind.sqlproj',
+    [string] $msBuild = "C:\Program Files (x86)\MSBuild\16.0\Bin\MSBuild.exe"
 )
 
 $poshSSDTBuildDeploy = Join-Path $PSScriptRoot "..\..\poshssdtbuilddeploy"
@@ -20,7 +21,7 @@ if ((Test-Path $msBuildDataTools) -eq $false) {
     Write-Output "Oh! It looks like MSBuildDataTools did not download."
 }
 
-    Invoke-MsBuildSSDT -DatabaseSolutionFilePath $sqlproj -DataToolsFilePath $msBuildDataTools
+    Invoke-MsBuildSSDT -DatabaseSolutionFilePath $sqlproj -DataToolsFilePath $msBuildDataTools -msBuild $msBuild
     if ($LASTEXITCODE -ne 0){
         Throw
     }
