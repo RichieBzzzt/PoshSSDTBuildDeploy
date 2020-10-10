@@ -15,7 +15,7 @@ $workingFolder = $PSScriptRoot
 New-Item -ItemType Directory -Force -Path $WorkingFolder
 $msBuildDataTools = Join-Path $WorkingFolder "\Microsoft.Data.Tools.Msbuild\lib\net46"
 if ((Test-Path $msBuildDataTools) -eq $false) {
-    Install-MicrosoftDataToolsMSBuild -WorkingFolder $workingFolder
+    Install-MicrosoftDataToolsMSBuild -WorkingFolder $workingFolder -DataToolsMsBuildPackageVersion '10.0.61804.210' 
 }
 if ((Test-Path $msBuildDataTools) -eq $false) {
     Write-Output "Oh! It looks like MSBuildDataTools did not download."
