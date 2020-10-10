@@ -2,7 +2,7 @@
 Param(
     [string] $databaseName = 'Northwind',
     [string] $dataBaseProjectFileName = 'Northwind.sqlproj',
-    [string] $msBuild = "C:\Program Files (x86)\MSBuild\16.0\Bin\MSBuild.exe"
+    [string] $msBuild = "c:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\\MSBuild.exe"
 )
 
 $poshSSDTBuildDeploy = Join-Path $PSScriptRoot "..\..\poshssdtbuilddeploy"
