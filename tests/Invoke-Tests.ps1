@@ -9,17 +9,17 @@ try{
   }
 
 try {
-    Get-InstalledModule Pester -MinimumVersion 4.3.1 -ErrorAction Stop | Out-Null
+    Get-InstalledModule Pester -MaximumVersion 4.3.1 -ErrorAction Stop | Out-Null
 }
 catch {
     write-host "Pester Module not found. Trying to install..."
     Install-PackageProvider -Name NuGet -Force -Scope CurrentUser
 }
 try{
-    Install-Module Pester -MinimumVersion 4.3.1 -Force -SkipPublisherCheck -Scope CurrentUser
+    Install-Module Pester -MaximumVersion 4.3.1 -Force -SkipPublisherCheck -Scope CurrentUser
 }
 catch {
-    Install-Module Pester -MinimumVersion 4.3.1 -Force -Scope CurrentUser
+    Install-Module Pester -MaximumVersion 4.3.1 -Force -Scope CurrentUser
 }
 $ErrorActionPreference = "Stop"
 $outputFile = 'TestRun.xml'
