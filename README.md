@@ -4,13 +4,13 @@ PowerShell Module designed to make use of [Microsoft.Data.Tools.MSBuild](https:/
 
 ## Build Status
 
-### CI Build
+### PR Build
 
-[<img src="https://bzzztio.visualstudio.com/_apis/public/build/definitions/e986a19c-74f7-4d1f-8316-7f478f3d6646/5/badge"/>](https://bzzztio.visualstudio.com/PoshSSDTBuildDeploy/_apps/hub/ms.vss-ciworkflow.build-ci-hub?_a=edit-build-definition&id=5)
+[![Build status](https://dev.azure.com/bzzztio/PoshSSDTBuildDeploy/_apis/build/status/PoshSSDTBuildDeploy-BuildPR)](https://dev.azure.com/bzzztio/PoshSSDTBuildDeploy/_build/latest?definitionId=46)
 
 ### Publish Build
 
-[<img src="https://bzzztio.visualstudio.com/_apis/public/build/definitions/e986a19c-74f7-4d1f-8316-7f478f3d6646/20/badge"/>](https://bzzztio.visualstudio.com/PoshSSDTBuildDeploy/_apps/hub/ms.vss-ciworkflow.build-ci-hub?_a=edit-build-definition&id=20)
+[![Build status](https://dev.azure.com/bzzztio/PoshSSDTBuildDeploy/_apis/build/status/PoshSSDTBuildDeploy-BuildMaster)](https://dev.azure.com/bzzztio/PoshSSDTBuildDeploy/_build/latest?definitionId=20)
 
 ## Latest Releases
 
