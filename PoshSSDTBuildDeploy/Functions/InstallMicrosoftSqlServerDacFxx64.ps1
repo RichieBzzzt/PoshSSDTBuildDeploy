@@ -63,9 +63,9 @@ if ((Test-Path $dacX64) -eq $false) {
     }
     Write-Host $nugetExe ($nugetArgs -join " ") -BackgroundColor White -ForegroundColor DarkGreen
     &$nugetExe $nugetArgs  2>&1 | Out-Host
-    $dacFxFolderNet46 = "$WorkingFolder\Microsoft.SqlServer.DacFx.x64\lib\net46"
+    $dacFxFolderNet46 = Join-Path $WorkingFolder "Microsoft.SqlServer.DacFx.x64\lib\net46"
     if (-not (Test-Path $dacFxFolderNet46)) {
-        $dacFxFolderNet40 = "$WorkingFolder\Microsoft.SqlServer.DacFx.x64\lib\net40"
+        $dacFxFolderNet40 = Join-Path $WorkingFolder "Microsoft.SqlServer.DacFx.x64\lib\net40"
         if (-not (Test-Path $dacFxFolderNet40)) {
             Throw "It appears that the nuget install hasn't worked, check output above to see whats going on."
         }
