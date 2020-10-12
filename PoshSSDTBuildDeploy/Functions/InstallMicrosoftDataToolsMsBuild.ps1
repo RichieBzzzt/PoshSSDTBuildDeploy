@@ -37,6 +37,8 @@ if ((Test-Path $msBuildDataTools) -eq $false) {
         [string] $DataToolsMsBuildPackageVersion,
         [string] $NuGetPath
     )
+    $WorkingFolder = Resolve-Path $WorkingFolder
+    $WorkingFolder = $WorkingFolder -replace ' ', '` ' 
     Write-Verbose "Verbose Folder : $WorkingFolder" -Verbose
     Write-Verbose "DataToolsVersion : $DataToolsMsBuildPackageVersion" -Verbose 
     Write-Warning "If DataToolsVersion is blank latest will be used"
@@ -64,9 +66,9 @@ if ((Test-Path $msBuildDataTools) -eq $false) {
     }
     Write-Host $nugetExe ($nugetArgs -join " ") -BackgroundColor White -ForegroundColor DarkGreen
     &$nugetExe $nugetArgs  2>&1 | Out-Host
-    $SSDTMSbuildFolderNet46 = "$WorkingFolder\Microsoft.Data.Tools.Msbuild\lib\net46"
+    $SSDTMSbuildFolderNet46 = Join-Path $WorkingFolder "Microsoft.Data.Tools.Msbuild\lib\net46"
     if (-not (Test-Path $SSDTMSbuildFolderNet46)) {
-        $SSDTMSbuildFolderNet40 = "$WorkingFolder\Microsoft.Data.Tools.Msbuild\lib\net40"
+        $SSDTMSbuildFolderNet40 = Join-Path $WorkingFolder "Microsoft.Data.Tools.Msbuild\lib\net40"
         if (-not (Test-Path $SSDTMSbuildFolderNet40)) {
             Throw "It appears that the nuget install hasn't worked, check output above to see whats going on."
         }
