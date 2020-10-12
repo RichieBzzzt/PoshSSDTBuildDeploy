@@ -38,6 +38,7 @@ if ((Test-Path $msBuildDataTools) -eq $false) {
         [string] $NuGetPath
     )
     $WorkingFolder = Resolve-Path $WorkingFolder
+    $WorkingFolder = $WorkingFolder -replace ' ', '` ' 
     Write-Verbose "Verbose Folder : $WorkingFolder" -Verbose
     Write-Verbose "DataToolsVersion : $DataToolsMsBuildPackageVersion" -Verbose 
     Write-Warning "If DataToolsVersion is blank latest will be used"

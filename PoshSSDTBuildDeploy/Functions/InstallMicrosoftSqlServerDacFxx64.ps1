@@ -36,6 +36,8 @@ if ((Test-Path $dacX64) -eq $false) {
         [string] $NuGetPath
     )
 
+    $WorkingFolder = Resolve-Path $WorkingFolder
+    $WorkingFolder = $WorkingFolder -replace ' ', '` ' 
     Write-Verbose "Verbose Folder : $WorkingFolder" -Verbose
     Write-Verbose "DataToolsVersion : $DacFxx64Version" -Verbose
     Write-Warning "If DacFxx64Version is blank latest will be used"
