@@ -67,12 +67,32 @@ if ((Test-Path $msBuildDataTools) -eq $false) {
                 Throw
             }
         }
+
+        elseif ($MSBuildVersionNumber -eq "16.0") {
+            $filepath = "C:\Program Files (x86)\Microsoft Visual Studio\2019"
+            $folders = Get-ChildItem $filepath
+            $MsBuildInstalled = 0
+            foreach ($folder in $folders) {
+                $MsbuildPath = "$($folder.FullName)\MSBuild\16.0\Bin"
+                if ((Test-Path $MsbuildPath) -eq $true) {
+                    Write-Host "MsBuild found!" -ForegroundColor Green -BackgroundColor Yellow
+                    $MsBuild = Join-Path $MsbuildPath "msbuild.exe"
+                    $MsBuildInstalled = 1
+                    break
+                }
+            }
+            if ($MsBuildInstalled -eq 0) {
+                Write-Error "Install Visual Studio Tools 2019 MSBuild Tools to continue!"
+                Throw
+            }
+        }
         else {
             $msbuild = "C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe"
         }
     }
     if (-not (Test-Path $msbuild)) {
-        Write-Error "No MSBuild installed. Either specify correct path or install Build Tools using 'Install-VsBuildTools2017', set -MSBuildVersionNumber to 15.0 and try again!"
+        Write-Error "No MSBuild installed. Either specify correct path or install Build Tools using 'Install-VsBuildTools2017', or 'Install-VsBuildTools2019', or set -MSBuildVersionNumber to 15.0 or 16.0 or use 
+        vssetup.powershell and try again!"
         Throw
     }
     $arg1 = "/p:tv=$MSBuildVersionNumber"
